@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ckb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RikFit - خۆراک</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#07090E;--card:#0E1117;--card2:#161B24;--border:#1E2530;--blue:#0EA5E9;--blue-dim:rgba(14,165,233,0.12);--green:#10B981;--green-dim:rgba(16,185,129,0.12);--purple:#8B5CF6;--orange:#F59E0B;--red:#EF4444;--red-dim:rgba(239,68,68,0.1);--text:#F0F6FC;--text2:#8B949E;--text3:#3D4450;}
+    body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;min-height:100vh;padding-bottom:90px;}
+    .glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+    .g1{width:300px;height:300px;background:rgba(16,185,129,0.05);top:-80px;left:-80px;}
+    .loading-screen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;}
+    .topbar{position:sticky;top:0;z-index:100;background:rgba(7,9,14,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;}
+    .topbar h2{font-size:20px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .topbar p{color:var(--text2);font-size:13px;}
+    /* Live badge */
+    .live-badge{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--green);background:var(--green-dim);padding:4px 10px;border-radius:20px;}
+    .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+
+    .page{padding:20px;position:relative;z-index:1;}
+    .rings-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:20px;margin-bottom:16px;}
+    .rings-title{font-size:14px;font-weight:800;color:var(--text2);margin-bottom:16px;}
+    .rings-row{display:flex;justify-content:space-around;align-items:center;}
+    .ring-item{text-align:center;}
+    .ring-item svg{transform:rotate(-90deg);}
+    .ri-val{font-size:14px;font-weight:800;margin-top:6px;}
+    .ri-label{font-size:11px;color:var(--text2);}
+    .ri-goal{font-size:10px;color:var(--text3);}
+    .ring-mini-wrap{position:relative;display:inline-block;}
+    .ring-mini-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;text-align:center;}
+    .sec-header{display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px;}
+    .sec-title{font-size:14px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
+    .btn-add{width:42px;height:42px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(14,165,233,0.3);transition:all 0.2s;}
+    .btn-add:hover{transform:scale(1.05);}
+    .meal-group{margin-bottom:16px;}
+    .mg-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:var(--card2);border-radius:13px;}
+    .mg-icon{font-size:20px;}
+    .mg-name{font-size:14px;font-weight:700;}
+    .mg-cal{margin-right:auto;font-size:13px;color:var(--text2);}
+    .meal-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+    .meal-emoji{font-size:32px;flex-shrink:0;}
+    .meal-info{flex:1;}
+    .meal-name{font-size:15px;font-weight:700;}
+    .meal-sources{font-size:12px;color:var(--text2);margin-top:3px;}
+    .meal-macros{display:flex;gap:10px;margin-top:6px;}
+    .mm{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:700;}
+    .mm-p{background:rgba(14,165,233,0.12);color:var(--blue);}
+    .mm-c{background:rgba(245,158,11,0.12);color:var(--orange);}
+    .mm-f{background:rgba(16,185,129,0.12);color:var(--green);}
+    .meal-cal{text-align:left;flex-shrink:0;}
+    .meal-cal-num{font-size:18px;font-weight:900;}
+    .meal-cal-lbl{font-size:11px;color:var(--text2);}
+    .meal-del{width:30px;height:30px;border-radius:8px;border:none;background:rgba(239,68,68,0.1);color:var(--red);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .empty-meals{text-align:center;padding:40px 20px;background:var(--card);border:1px dashed var(--border);border-radius:20px;}
+    .em-icon{font-size:48px;margin-bottom:12px;}
+    .empty-meals p{color:var(--text2);font-size:15px;}
+    .em-hint{font-size:13px;color:var(--text3);margin-top:6px;}
+    /* Bottom nav */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(14,17,23,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 20px 12px;}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--text3);transition:color 0.2s;padding:4px 0;}
+    .nav-item.active{color:var(--green);}
+    .nav-item.active .nav-icon{filter:drop-shadow(0 0 6px rgba(16,185,129,0.6));}
+    .nav-icon{font-size:22px;}
+    .nav-label{font-size:11px;font-weight:600;}
+    /* Modal */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:none;flex-direction:column;backdrop-filter:blur(6px);}
+    .overlay.open{display:flex;}
+    .modal-sheet{background:var(--card);border-radius:24px 24px 0 0;border:1px solid var(--border);border-bottom:none;margin-top:auto;max-height:92vh;overflow-y:auto;animation:slideUp 0.3s ease;}
+    .modal-inner{padding:20px 20px 40px;}
+    .modal-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px;}
+    .modal-title{font-size:18px;font-weight:800;margin-bottom:16px;}
+    .meal-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .mt-opt{padding:16px;border-radius:14px;border:2px solid var(--border);background:var(--card2);cursor:pointer;text-align:center;transition:all 0.2s;}
+    .mt-opt:hover,.mt-opt.selected{border-color:var(--blue);background:var(--blue-dim);}
+    .mt-icon{font-size:28px;margin-bottom:6px;}
+    .mt-name{font-size:14px;font-weight:700;}
+    /* Search */
+    .search-box{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:13px;padding:13px 16px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:15px;outline:none;direction:rtl;transition:border-color 0.2s;margin-bottom:10px;}
+    .search-box:focus{border-color:var(--blue);}
+    .search-box::placeholder{color:var(--text3);}
+    /* Category tabs */
+    .cat-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none;}
+    .cat-tabs::-webkit-scrollbar{display:none;}
+    .cat-tab{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--card2);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Tajawal',sans-serif;transition:all 0.2s;flex-shrink:0;}
+    .cat-tab.active{border-color:var(--blue);background:var(--blue-dim);color:var(--blue);}
+    /* Food list */
+    .food-list{max-height:240px;overflow-y:auto;}
+    .food-item{padding:12px 14px;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background 0.15s;border-bottom:1px solid var(--border);}
+    .food-item:last-child{border-bottom:none;}
+    .food-item:hover{background:var(--card2);}
+    .food-item.selected{background:var(--blue-dim);border-color:var(--blue);}
+    .fi-emoji{font-size:24px;flex-shrink:0;}
+    .fi-info{flex:1;}
+    .fi-name{font-size:14px;font-weight:700;}
+    .fi-name-en{font-size:11px;color:var(--text2);}
+    .fi-macros{font-size:11px;color:var(--text3);margin-top:2px;}
+    .fi-units{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;}
+    .fi-unit-badge{font-size:10px;padding:2px 7px;border-radius:5px;background:var(--card);border:1px solid var(--border);color:var(--text2);}
+    /* Qty + unit */
+    .qty-unit-section{margin-top:12px;}
+    /* Unit selector */
+    .unit-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+    .unit-opt{padding:8px 14px;border-radius:10px;border:2px solid var(--border);background:var(--card2);cursor:pointer;font-size:13px;font-weight:700;color:var(--text2);transition:all 0.2s;font-family:'Tajawal',sans-serif;}
+    .unit-opt.sel{border-color:var(--green);background:var(--green-dim);color:var(--green);}
+    .qty-label{font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:600;}
+    .qty-wrap{display:flex;align-items:center;background:var(--card2);border:1.5px solid var(--border);border-radius:13px;overflow:hidden;}
+    .qty-wrap input{border:none;background:transparent;text-align:center;font-size:22px;font-weight:800;flex:1;padding:14px 6px;color:var(--text);font-family:'Tajawal',sans-serif;outline:none;}
+    .qb{width:52px;min-height:54px;background:transparent;border:none;color:var(--blue);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Tajawal',sans-serif;}
+    .qty-unit-lbl{padding:0 14px;color:var(--text2);font-size:13px;font-weight:600;}
+    .qty-preview{margin-top:10px;padding:12px 14px;background:var(--card2);border-radius:11px;display:flex;justify-content:space-between;font-size:13px;}
+    .qp-label{color:var(--text2);}
+    .qp-val{font-weight:800;color:var(--green);}
+    .modal-nav{display:flex;gap:10px;margin-top:16px;}
+    .btn-back{flex:0;padding:14px 20px;border-radius:13px;border:1.5px solid var(--border);background:transparent;color:var(--text2);font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
+    .btn-confirm{flex:1;padding:14px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--green),#059669);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;}
+    .btn-confirm:disabled{opacity:0.5;cursor:not-allowed;}
+    /* Empty food list */
+    .empty-food{text-align:center;padding:30px;color:var(--text2);font-size:14px;}
+    /* Loading foods */
+    .loading-foods{text-align:center;padding:20px;color:var(--text2);font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .mini-spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.6s linear infinite;}
+    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  </style>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen"><div class="spinner"></div></div>
+  <div class="glow g1"></div>
+
+  <div class="topbar">
+    <div><h2>خۆراک 🍽️</h2><p id="date-txt"></p></div>
+    <div class="live-badge"><div class="live-dot"></div>ریل تایم</div>
+  </div>
+
+  <div class="page">
+    <div class="rings-card">
+      <div class="rings-title">پیشرفتی ئیمڕۆ</div>
+      <div class="rings-row">
+        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-cal" cx="40" cy="40" r="32" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 1s ease"/></svg><div class="ring-mini-center" id="rc-cal">0%</div></div><div class="ri-val" id="rv-cal">0</div><div class="ri-label">کالۆری</div><div class="ri-goal" id="rg-cal">/0</div></div>
+        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-pro" cx="40" cy="40" r="32" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 1s ease"/></svg><div class="ring-mini-center" id="rc-pro">0%</div></div><div class="ri-val" id="rv-pro">0g</div><div class="ri-label">پڕۆتین</div><div class="ri-goal" id="rg-pro">/0g</div></div>
+        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-carb" cx="40" cy="40" r="32" fill="none" stroke="var(--orange)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 1s ease"/></svg><div class="ring-mini-center" id="rc-carb">0%</div></div><div class="ri-val" id="rv-carb">0g</div><div class="ri-label">کاربۆ</div><div class="ri-goal" id="rg-carb">/0g</div></div>
+        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-fat" cx="40" cy="40" r="32" fill="none" stroke="var(--green)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 1s ease"/></svg><div class="ring-mini-center" id="rc-fat">0%</div></div><div class="ri-val" id="rv-fat">0g</div><div class="ri-label">چەوی</div><div class="ri-goal" id="rg-fat">/0g</div></div>
+      </div>
+    </div>
+    <div class="sec-header"><div class="sec-title">🍽️ خواردنەکان</div><button class="btn-add" onclick="openModal()">+</button></div>
+    <div id="meals-container"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="home.html"      class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">ماڵ</span></a>
+    <a href="nutrition.html" class="nav-item active"><span class="nav-icon">🍽️</span><span class="nav-label">خۆراک</span></a>
+    <a href="vitamins.html"  class="nav-item"><span class="nav-icon">💊</span><span class="nav-label">ڤیتامین</span></a>
+  </nav>
+
+  <!-- ADD MEAL MODAL -->
+  <div class="overlay" id="add-modal">
+    <div class="modal-sheet"><div class="modal-inner">
+      <div class="modal-handle"></div>
+
+      <!-- Step 1: Meal type -->
+      <div id="modal-s1">
+        <div class="modal-title">جۆری خواردن هەڵبژێرە 🍴</div>
+        <div class="meal-type-grid">
+          <div class="mt-opt" data-type="breakfast" onclick="selMealType('breakfast')"><div class="mt-icon">🌅</div><div class="mt-name">بەیانی خواردن</div></div>
+          <div class="mt-opt" data-type="lunch"     onclick="selMealType('lunch')"><div class="mt-icon">☀️</div><div class="mt-name">نیوەڕۆ خواردن</div></div>
+          <div class="mt-opt" data-type="dinner"    onclick="selMealType('dinner')"><div class="mt-icon">🌙</div><div class="mt-name">شەو خواردن</div></div>
+          <div class="mt-opt" data-type="snack"     onclick="selMealType('snack')"><div class="mt-icon">🍎</div><div class="mt-name">میوە / قۆناغ</div></div>
+        </div>
+      </div>
+
+      <!-- Step 2: Food search -->
+      <div id="modal-s2" style="display:none">
+        <div class="modal-title">خواردن هەڵبژێرە 🔍</div>
+        <input type="text" class="search-box" id="food-search" placeholder="ناوی خواردن بنووسە..." oninput="filterFoods(this.value)">
+        <!-- Category filter tabs -->
+        <div class="cat-tabs" id="cat-tabs">
+          <button class="cat-tab active" data-cat="all" onclick="selCat('all')">هەموو</button>
+          <button class="cat-tab" data-cat="protein"  onclick="selCat('protein')">🥩 پڕۆتین</button>
+          <button class="cat-tab" data-cat="carb"     onclick="selCat('carb')">🌾 کاربۆ</button>
+          <button class="cat-tab" data-cat="fat"      onclick="selCat('fat')">🥑 چەوی</button>
+          <button class="cat-tab" data-cat="fruit"    onclick="selCat('fruit')">🍎 میوە</button>
+          <button class="cat-tab" data-cat="veggie"   onclick="selCat('veggie')">🥦 سەوزە</button>
+          <button class="cat-tab" data-cat="dairy"    onclick="selCat('dairy')">🥛 شیر</button>
+          <button class="cat-tab" data-cat="drink"    onclick="selCat('drink')">🧃 خواردنەوە</button>
+        </div>
+        <div class="food-list" id="food-list">
+          <div class="loading-foods"><div class="mini-spin"></div>بارکردن...</div>
+        </div>
+        <div class="modal-nav">
+          <button class="btn-back" onclick="backToS1()">← گەڕانەوە</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Quantity + Unit -->
+      <div id="modal-s3" style="display:none">
+        <div class="modal-title" id="s3-title">چەندیش؟</div>
+        <!-- Unit selector — shown when food has multiple units -->
+        <div id="unit-selector-wrap" style="display:none">
+          <div class="qty-label">یەکەی پێوانە هەڵبژێرە</div>
+          <div class="unit-selector" id="unit-selector"></div>
+        </div>
+        <div class="qty-label" id="qty-label">چەند؟</div>
+        <div class="qty-wrap">
+          <button class="qb" onclick="adjQty(-1)">−</button>
+          <input type="number" id="qty-inp" value="100" min="0.1" step="0.1" oninput="updatePreview()">
+          <span class="qty-unit-lbl" id="qty-unit-lbl">گرام</span>
+          <button class="qb" onclick="adjQty(1)">+</button>
+        </div>
+        <div class="qty-preview">
+          <span class="qp-label">کالۆری:</span><span class="qp-val" id="qty-cal-preview">—</span>
+        </div>
+        <div class="modal-nav">
+          <button class="btn-back" onclick="backToS2()">← گەڕانەوە</button>
+          <button class="btn-confirm" id="btn-add-meal" onclick="addMeal()">✓ زیادکردن</button>
+        </div>
+      </div>
+
+    </div></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp }                    from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged }      from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, collection,
+             onSnapshot, query, where,
+             orderBy }                          from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const app=initializeApp({apiKey:"AIzaSyBhYiFcQeB2r6CWDiFvqV0LUPNVoow1sjM",authDomain:"appmass-f26bd.firebaseapp.com",projectId:"appmass-f26bd",storageBucket:"appmass-f26bd.firebasestorage.app",messagingSenderId:"735578268323",appId:"1:735578268323:web:4f5e27ce1307db429bd516"});
+    const auth=getAuth(app), db=getFirestore(app);
+
+    // ══════════════════════════════════════
+    // STATE
+    // ══════════════════════════════════════
+    let allFoods=[], filteredFoods=[];
+    let selectedFood=null, selectedUnit=null, selectedMealType=null;
+    let activeCat='all', searchQ='';
+    let foodsLoaded=false;
+
+    // ══════════════════════════════════════
+    // AUTH
+    // ══════════════════════════════════════
+    onAuthStateChanged(auth, user=>{
+      if(!user){window.location.href='index.html';return;}
+      document.getElementById('loading-screen').style.display='none';
+      checkReset();
+      document.getElementById('date-txt').textContent=new Date().toLocaleDateString('en-GB');
+      updateRings();
+      renderMeals();
+      // ── Start real-time food listener ──
+      startFoodListener();
+    });
+
+    function checkReset(){
+      const ts=todayStr(), td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      if(td.date!==ts) localStorage.setItem('rkf_today',JSON.stringify({date:ts,water:0,sleep:7.5,sleepQ:'good',meals:[],workouts:[]}));
+    }
+
+    // ══════════════════════════════════════
+    // 🔥 REAL-TIME FIRESTORE LISTENER
+    // ══════════════════════════════════════
+    function startFoodListener(){
+      try{
+        // Listen to active foods, ordered by creation
+        const q=query(collection(db,'foods'),where('active','==',true));
+        onSnapshot(q, snap=>{
+          allFoods=snap.docs.map(d=>({id:d.id,...d.data()}));
+          // Sort by createdAt
+          allFoods.sort((a,b)=>(a.name_ku||'').localeCompare(b.name_ku||''));
+          foodsLoaded=true;
+          applyFoodFilter();
+          // If modal open on step 2, refresh list
+          if(document.getElementById('modal-s2').style.display!=='none'){
+            renderFoodList();
+          }
+        }, err=>{
+          console.warn('Foods listener error:', err);
+          foodsLoaded=true;
+          applyFoodFilter();
+        });
+      }catch(e){
+        foodsLoaded=true;
+        applyFoodFilter();
+      }
+    }
+
+    function applyFoodFilter(){
+      const q=searchQ.toLowerCase();
+      filteredFoods=allFoods.filter(f=>{
+        if(activeCat!=='all'&&f.category!==activeCat)return false;
+        if(q&&!(f.name_ku||'').toLowerCase().includes(q)&&!(f.name_en||'').toLowerCase().includes(q))return false;
+        return true;
+      });
+    }
+
+    // ══════════════════════════════════════
+    // RINGS
+    // ══════════════════════════════════════
+    function updateRings(){
+      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
+      const goals=prof.goals||{calories:2000,protein:120,carbs:250,fat:60};
+      const today=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      const meals=today.meals||[];
+      const t={cal:meals.reduce((s,m)=>s+(m.calories||0),0),pro:meals.reduce((s,m)=>s+(m.protein||0),0),carb:meals.reduce((s,m)=>s+(m.carbs||0),0),fat:meals.reduce((s,m)=>s+(m.fat||0),0)};
+      const circ=2*Math.PI*32;
+      function sR(id,rId,val,goal,lbl){const p=Math.min(1,val/goal);document.getElementById(rId).style.strokeDashoffset=circ*(1-p);document.getElementById('rc-'+id).textContent=Math.round(p*100)+'%';document.getElementById('rv-'+id).textContent=Math.round(val*10)/10+(lbl||'');document.getElementById('rg-'+id).textContent='/'+goal+(lbl||'');}
+      sR('cal','r-cal',t.cal,goals.calories,'');sR('pro','r-pro',t.pro,goals.protein,'g');sR('carb','r-carb',t.carb,goals.carbs,'g');sR('fat','r-fat',t.fat,goals.fat,'g');
+    }
+
+    // ══════════════════════════════════════
+    // MEALS RENDER
+    // ══════════════════════════════════════
+    function renderMeals(){
+      const today=JSON.parse(localStorage.getItem('rkf_today')||'{}'), meals=today.meals||[];
+      const cont=document.getElementById('meals-container');
+      if(!meals.length){cont.innerHTML='<div class="empty-meals"><div class="em-icon">🍽️</div><p>هێشتا خواردنت تۆمار نەکراوە</p><div class="em-hint">بە + خواردنت زیاد بکە</div></div>';return;}
+      const grps={breakfast:{name:'بەیانی خواردن',icon:'🌅',meals:[]},lunch:{name:'نیوەڕۆ خواردن',icon:'☀️',meals:[]},dinner:{name:'شەو خواردن',icon:'🌙',meals:[]},snack:{name:'قۆناغ',icon:'🍎',meals:[]}};
+      meals.forEach(m=>{if(grps[m.type])grps[m.type].meals.push(m);});
+      let html='';
+      for(const[k,g]of Object.entries(grps)){
+        if(!g.meals.length)continue;
+        const gC=g.meals.reduce((s,m)=>s+(m.calories||0),0);
+        html+=`<div class="meal-group"><div class="mg-header"><span class="mg-icon">${g.icon}</span><span class="mg-name">${g.name}</span><span class="mg-cal">${Math.round(gC)} cal</span></div>`;
+        g.meals.forEach(m=>{html+=`<div class="meal-item"><div class="meal-emoji">${m.emoji||'🍽️'}</div><div class="meal-info"><div class="meal-name">${m.name_ku||m.name_en||'—'}</div><div class="meal-sources">${m.qty} ${m.unit||'g'}</div><div class="meal-macros"><span class="mm mm-p">P:${Math.round(m.protein*10)/10}g</span><span class="mm mm-c">C:${Math.round(m.carbs*10)/10}g</span><span class="mm mm-f">F:${Math.round(m.fat*10)/10}g</span></div></div><div class="meal-cal"><div class="meal-cal-num">${Math.round(m.calories)}</div><div class="meal-cal-lbl">cal</div></div><button class="meal-del" onclick="deleteMeal('${m.id}')">×</button></div>`;});
+        html+='</div>';
+      }
+      cont.innerHTML=html;
+    }
+
+    window.deleteMeal=id=>{
+      const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      td.meals=(td.meals||[]).filter(m=>m.id!==id);
+      localStorage.setItem('rkf_today',JSON.stringify(td));
+      updateRings();renderMeals();
+    };
+
+    // ══════════════════════════════════════
+    // MODAL
+    // ══════════════════════════════════════
+    window.openModal=()=>{
+      selectedFood=null;selectedUnit=null;selectedMealType=null;
+      document.querySelectorAll('.mt-opt').forEach(el=>el.classList.remove('selected'));
+      showStep(1);
+      document.getElementById('add-modal').classList.add('open');
+    };
+
+    document.getElementById('add-modal').addEventListener('click',e=>{
+      if(e.target===document.getElementById('add-modal'))document.getElementById('add-modal').classList.remove('open');
+    });
+
+    function showStep(n){
+      document.getElementById('modal-s1').style.display=n===1?'block':'none';
+      document.getElementById('modal-s2').style.display=n===2?'block':'none';
+      document.getElementById('modal-s3').style.display=n===3?'block':'none';
+    }
+
+    window.selMealType=type=>{
+      selectedMealType=type;
+      document.querySelectorAll('.mt-opt').forEach(el=>el.classList.toggle('selected',el.dataset.type===type));
+      setTimeout(()=>{
+        showStep(2);
+        document.getElementById('food-search').value='';
+        searchQ=''; activeCat='all';
+        document.querySelectorAll('.cat-tab').forEach(el=>el.classList.toggle('active',el.dataset.cat==='all'));
+        applyFoodFilter();renderFoodList();
+        document.getElementById('food-search').focus();
+      },200);
+    };
+
+    window.backToS1=()=>{showStep(1);};
+    window.backToS2=()=>{selectedFood=null;selectedUnit=null;showStep(2);renderFoodList();};
+
+    // ── Category filter ──
+    window.selCat=cat=>{
+      activeCat=cat;
+      document.querySelectorAll('.cat-tab').forEach(el=>el.classList.toggle('active',el.dataset.cat===cat));
+      applyFoodFilter();renderFoodList();
+    };
+
+    // ── Search ──
+    window.filterFoods=q=>{searchQ=q;applyFoodFilter();renderFoodList();};
+
+    // ── Render food list ──
+    function renderFoodList(){
+      const list=document.getElementById('food-list');
+      if(!foodsLoaded){list.innerHTML='<div class="loading-foods"><div class="mini-spin"></div>بارکردن لە Firestore...</div>';return;}
+      if(!filteredFoods.length){list.innerHTML=`<div class="empty-food">${allFoods.length===0?'هێشتا خواردنێک زیاد نەکراوە لە ئەدمین':'خواردنێک نەدۆزرایەوە'}</div>`;return;}
+      list.innerHTML=filteredFoods.map(f=>{
+        const units=f.units||[];
+        const unitBadges=units.map(u=>`<span class="fi-unit-badge">${u.type}</span>`).join('');
+        return`<div class="food-item${selectedFood?.id===f.id?' selected':''}" onclick="selectFood('${f.id}')">
+          <span class="fi-emoji">${f.emoji||'🍽️'}</span>
+          <div class="fi-info">
+            <div class="fi-name">${f.name_ku||f.name_en||'—'}</div>
+            <div class="fi-name-en">${f.name_en||''}</div>
+            <div class="fi-units">${unitBadges}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Select food → go to step 3 ──
+    window.selectFood=id=>{
+      selectedFood=allFoods.find(f=>f.id===id);
+      if(!selectedFood)return;
+      const units=selectedFood.units||[];
+      // Set first unit as default
+      selectedUnit=units[0]||null;
+      // Build unit selector
+      const wrap=document.getElementById('unit-selector-wrap');
+      const sel=document.getElementById('unit-selector');
+      if(units.length>1){
+        wrap.style.display='block';
+        sel.innerHTML=units.map((u,i)=>`<button class="unit-opt${i===0?' sel':''}" onclick="selUnit(${i})">${u.type}</button>`).join('');
+      }else{
+        wrap.style.display='none';
+      }
+      // Set title and default qty
+      document.getElementById('s3-title').textContent=`${selectedFood.emoji||'🍽️'} ${selectedFood.name_ku||selectedFood.name_en||''}`;
+      setDefaultQty(selectedUnit);
+      showStep(3);
+    };
+
+    window.selUnit=idx=>{
+      const units=selectedFood?.units||[];
+      selectedUnit=units[idx];
+      document.querySelectorAll('.unit-opt').forEach((el,i)=>el.classList.toggle('sel',i===idx));
+      setDefaultQty(selectedUnit);
+    };
+
+    function setDefaultQty(unit){
+      if(!unit)return;
+      // For gram/ml: default 100, for others: default 1
+      const isGramMl=unit.type.includes('گرام')||unit.type.includes('ملیلیتر')||unit.type.includes('لیتر')||unit.type.includes('g')||unit.type.includes('ml')||unit.type.includes('kg')||unit.type.includes('L');
+      const def=isGramMl?100:1;
+      document.getElementById('qty-inp').value=def;
+      document.getElementById('qty-unit-lbl').textContent=unit.type;
+      document.getElementById('qty-label').textContent=`چەند ${unit.type}؟`;
+      updatePreview();
+    }
+
+    window.adjQty=d=>{
+      const inp=document.getElementById('qty-inp');
+      const step=parseFloat(inp.step)||1;
+      let v=parseFloat(inp.value)+d*step;
+      inp.value=Math.max(0.1,Math.round(v*10)/10);
+      updatePreview();
+    };
+
+    window.updatePreview=()=>{
+      if(!selectedFood||!selectedUnit)return;
+      const qty=parseFloat(document.getElementById('qty-inp').value)||1;
+      const cal=calcNutrient(selectedUnit,qty,'cal');
+      document.getElementById('qty-cal-preview').textContent=Math.round(cal*10)/10+' cal';
+    };
+
+    // ── Calculate nutrition based on unit type ──
+    function calcNutrient(unit,qty,field){
+      if(!unit)return 0;
+      const isGramMl=unit.type.includes('گرام')||unit.type.includes('ملیلیتر')||unit.type.includes('g')||unit.type.includes('ml');
+      if(isGramMl){
+        // stored per 100 units
+        return(unit[field]||0)*(qty/100);
+      }else{
+        // stored per 1 unit (piece, cup, etc.)
+        return(unit[field]||0)*qty;
+      }
+    }
+
+    // ── Add meal ──
+    window.addMeal=()=>{
+      if(!selectedFood||!selectedUnit||!selectedMealType)return;
+      const qty=parseFloat(document.getElementById('qty-inp').value)||1;
+      const meal={
+        id:Date.now().toString(),
+        type:selectedMealType,
+        name_ku:selectedFood.name_ku||'',
+        name_en:selectedFood.name_en||'',
+        emoji:selectedFood.emoji||'🍽️',
+        qty,
+        unit:selectedUnit.type,
+        calories:calcNutrient(selectedUnit,qty,'cal'),
+        protein:calcNutrient(selectedUnit,qty,'protein'),
+        carbs:calcNutrient(selectedUnit,qty,'carbs'),
+        fat:calcNutrient(selectedUnit,qty,'fat'),
+        addedAt:new Date().toISOString()
+      };
+      const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      td.meals=td.meals||[];td.meals.push(meal);
+      localStorage.setItem('rkf_today',JSON.stringify(td));
+      document.getElementById('add-modal').classList.remove('open');
+      updateRings();renderMeals();
+      selectedFood=null;selectedUnit=null;
+    };
+
+    function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+  </script>
+</body>
+</html>
