@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ckb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RikFit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --bg:#07090E;--card:#0E1117;--card2:#161B24;--border:#1E2530;
+      --blue:#0EA5E9;--blue-dim:rgba(14,165,233,0.12);
+      --green:#10B981;--green-dim:rgba(16,185,129,0.12);
+      --purple:#8B5CF6;--orange:#F59E0B;--red:#EF4444;
+      --text:#F0F6FC;--text2:#8B949E;--text3:#3D4450;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow-x:hidden;}
+    .glow{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
+    .g1{width:400px;height:400px;background:rgba(14,165,233,0.06);top:-150px;left:-100px;}
+    .g2{width:300px;height:300px;background:rgba(139,92,246,0.05);bottom:-100px;right:-100px;}
+    .container{width:100%;max-width:430px;position:relative;z-index:1;}
+    .logo{text-align:center;margin-bottom:36px;animation:fadeDown 0.6s ease;}
+    .logo-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 14px;box-shadow:0 0 40px rgba(14,165,233,0.25);}
+    .logo h1{font-size:32px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#fff,var(--blue) 60%,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .logo p{color:var(--text2);font-size:14px;margin-top:6px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:fadeUp 0.5s ease;}
+    .tabs{display:flex;background:var(--card2);border-radius:14px;padding:4px;margin-bottom:28px;}
+    .tab{flex:1;padding:11px;text-align:center;border-radius:11px;cursor:pointer;font-size:15px;font-weight:700;color:var(--text2);transition:all 0.25s;font-family:'Tajawal',sans-serif;border:none;background:transparent;}
+    .tab.active{background:var(--blue);color:#fff;box-shadow:0 4px 12px rgba(14,165,233,0.3);}
+    .form-group{margin-bottom:18px;}
+    label{display:block;font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:600;}
+    input{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:13px;padding:14px 16px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;direction:rtl;}
+    input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(14,165,233,0.1);}
+    input::placeholder{color:var(--text3);}
+    .btn{width:100%;padding:16px;border-radius:14px;border:none;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:all 0.2s;}
+    .btn-primary{background:linear-gradient(135deg,var(--blue),#0077B6);color:#fff;box-shadow:0 6px 20px rgba(14,165,233,0.3);}
+    .btn-primary:hover{transform:translateY(-2px);}
+    .btn-primary:disabled{opacity:0.6;transform:none;cursor:not-allowed;}
+    .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .gender-btn{padding:18px 12px;border-radius:14px;border:2px solid var(--border);background:var(--card2);color:var(--text2);cursor:pointer;text-align:center;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;transition:all 0.25s;}
+    .gender-btn .gi{font-size:28px;display:block;margin-bottom:6px;}
+    .gender-btn.selected{border-color:var(--blue);background:var(--blue-dim);color:var(--blue);}
+    .opt{padding:14px 16px;border-radius:13px;border:2px solid var(--border);background:var(--card2);cursor:pointer;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:all 0.2s;}
+    .opt.selected-blue{border-color:var(--blue);background:var(--blue-dim);}
+    .opt.selected-green{border-color:var(--green);background:var(--green-dim);}
+    .opt .oi{font-size:24px;flex-shrink:0;}
+    .opt .on{font-weight:700;font-size:14px;}
+    .opt .od{font-size:12px;color:var(--text2);margin-top:2px;}
+    .steps{display:flex;gap:8px;justify-content:center;margin-bottom:28px;}
+    .sdot{width:8px;height:8px;border-radius:4px;background:var(--border);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);}
+    .sdot.active{background:var(--blue);width:28px;}
+    .sdot.done{background:var(--green);}
+    .sh{margin-bottom:22px;}
+    .sh h2{font-size:22px;font-weight:800;}
+    .sh p{color:var(--text2);font-size:14px;margin-top:5px;}
+    .num-wrap{display:flex;align-items:center;background:var(--card2);border:1.5px solid var(--border);border-radius:13px;overflow:hidden;}
+    .num-wrap input{border:none;background:transparent;text-align:center;font-size:20px;font-weight:800;flex:1;padding:14px 6px;box-shadow:none;}
+    .nb{width:52px;min-height:54px;background:transparent;border:none;color:var(--blue);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;font-family:'Tajawal',sans-serif;}
+    .nb:hover{background:var(--blue-dim);}
+    .nu{padding:0 14px;color:var(--text2);font-size:13px;font-weight:600;white-space:nowrap;}
+    .alert{padding:12px 16px;border-radius:11px;margin-bottom:16px;font-size:13px;font-weight:600;display:none;}
+    .alert-err{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#FCA5A5;}
+    .alert-info{background:var(--blue-dim);border:1px solid rgba(14,165,233,0.25);color:var(--blue);}
+    .view{display:none;}
+    .view.active{display:block;}
+    .loading-screen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+    .spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
+    .loading-screen p{color:var(--text2);font-size:15px;}
+    .success-screen{text-align:center;padding:20px 0;}
+    .s-icon{font-size:64px;animation:bounce 0.6s ease;}
+    .success-screen h2{font-size:24px;font-weight:800;margin:16px 0 8px;}
+    .success-screen p{color:var(--text2);font-size:15px;margin-bottom:28px;}
+    .result-card{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px;}
+    .result-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+    .result-row:last-child{border-bottom:none;}
+    .result-label{color:var(--text2);font-size:14px;}
+    .result-val{font-size:16px;font-weight:800;color:var(--blue);}
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+    @keyframes spin{to{transform:rotate(360deg);}}
+  </style>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen"><div class="spinner"></div><p>چاوەڕوان بە...</p></div>
+  <div class="glow g1"></div><div class="glow g2"></div>
+
+  <div class="container">
+    <div class="logo">
+      <div class="logo-icon">💪</div>
+      <h1>RIKFIT</h1>
+      <p>ژیانی تەندروست دەستپێکە ئەمڕۆ</p>
+    </div>
+
+    <!-- AUTH -->
+    <div id="view-auth" class="view">
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" id="tab-login" onclick="switchTab('login')">چوونەژوورەوە</button>
+          <button class="tab" id="tab-register" onclick="switchTab('register')">تۆمارکردن</button>
+        </div>
+        <div id="form-login">
+          <div id="err-login" class="alert alert-err"></div>
+          <div class="form-group"><label>ئیمەیل</label><input type="email" id="l-email" placeholder="example@email.com"></div>
+          <div class="form-group"><label>وشەی نهێنی</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+          <button class="btn btn-primary" id="btn-login" onclick="doLogin()">چوونەژوورەوە ←</button>
+        </div>
+        <div id="form-register" style="display:none">
+          <div id="err-reg" class="alert alert-err"></div>
+          <div class="form-group"><label>ناوی تەواو</label><input type="text" id="r-name" placeholder="ناوت لێرە بنووسە"></div>
+          <div class="form-group"><label>ئیمەیل</label><input type="email" id="r-email" placeholder="example@email.com"></div>
+          <div class="form-group"><label>وشەی نهێنی</label><input type="password" id="r-pass" placeholder="لانیکەم ٦ پیت"></div>
+          <button class="btn btn-primary" id="btn-reg" onclick="doRegister()">دروستکردنی ئەکاونت ←</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONBOARDING -->
+    <div id="view-onboarding" class="view">
+      <div class="card">
+        <div class="steps"><div class="sdot active" id="d0"></div><div class="sdot" id="d1"></div><div class="sdot" id="d2"></div></div>
+        <div id="s0">
+          <div class="sh"><h2>زانیاری کەسی 👤</h2><p>با ئەپەکە تازە بۆ تۆ بنا بکرێت</p></div>
+          <div class="form-group"><label>ڕەگەز</label>
+            <div class="gender-grid">
+              <button class="gender-btn" id="btn-male" onclick="selGender('male')"><span class="gi">👨</span>نێر</button>
+              <button class="gender-btn" id="btn-female" onclick="selGender('female')"><span class="gi">👩</span>مێ</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:16px"><label>تەمەن</label>
+            <div class="num-wrap"><button class="nb" onclick="adj('age',-1)">−</button><input type="number" id="v-age" value="25" min="10" max="100"><span class="nu">ساڵ</span><button class="nb" onclick="adj('age',1)">+</button></div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:22px" onclick="goStep(0)">دوواتر ←</button>
+        </div>
+        <div id="s1" style="display:none">
+          <div class="sh"><h2>پیوانەی جەستە ⚡</h2><p>ئەم زانیاریانە بۆ حیسابکردنی پێویستەکانت لازمن</p></div>
+          <div class="form-group"><label>کێش</label>
+            <div class="num-wrap"><button class="nb" onclick="adj('weight',-0.5)">−</button><input type="number" id="v-weight" value="70" min="30" max="300" step="0.5"><span class="nu">کیلۆگرام</span><button class="nb" onclick="adj('weight',0.5)">+</button></div>
+          </div>
+          <div class="form-group" style="margin-top:16px"><label>باڵ</label>
+            <div class="num-wrap"><button class="nb" onclick="adj('height',-1)">−</button><input type="number" id="v-height" value="170" min="100" max="250"><span class="nu">سانتیمەتر</span><button class="nb" onclick="adj('height',1)">+</button></div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:22px" onclick="goStep(1)">دوواتر ←</button>
+        </div>
+        <div id="s2" style="display:none">
+          <div class="sh"><h2>چالاکی و ئامانج 🎯</h2><p>ئاستی چالاکیت و ئامانجت دیاری بکە</p></div>
+          <div class="form-group"><label>ئاستی چالاکی</label>
+            <div onclick="selAct('sedentary')" class="opt" data-a="sedentary"><span class="oi">🛋️</span><div><div class="on">کەم چالاک</div><div class="od">کار لە دیوان</div></div></div>
+            <div onclick="selAct('light')" class="opt" data-a="light"><span class="oi">🚶</span><div><div class="on">سووک</div><div class="od">١-٣ ڕۆژ لە هەفتەیەک</div></div></div>
+            <div onclick="selAct('moderate')" class="opt" data-a="moderate"><span class="oi">🏃</span><div><div class="on">مامناوەند</div><div class="od">٣-٥ ڕۆژ لە هەفتەیەک</div></div></div>
+            <div onclick="selAct('active')" class="opt" data-a="active"><span class="oi">⚡</span><div><div class="on">زۆر چالاک</div><div class="od">٦-٧ ڕۆژ لە هەفتەیەک</div></div></div>
+          </div>
+          <div class="form-group"><label>ئامانج</label>
+            <div onclick="selGoal('lose')" class="opt" data-g="lose"><span class="oi">🔥</span><div><div class="on">کەمکردنەوەی کێش</div></div></div>
+            <div onclick="selGoal('maintain')" class="opt" data-g="maintain"><span class="oi">⚖️</span><div><div class="on">پاراستنی کێش</div></div></div>
+            <div onclick="selGoal('gain')" class="opt" data-g="gain"><span class="oi">💪</span><div><div class="on">زیادکردنی ماس</div></div></div>
+          </div>
+          <div id="saving-info" class="alert alert-info">⏳ تۆمارکردن لە Firebase...</div>
+          <button class="btn btn-primary" id="btn-finish" style="margin-top:8px" onclick="finishOnboard()">دەستپێکردن 🚀</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="view-result" class="view">
+      <div class="card">
+        <div class="success-screen">
+          <div class="s-icon">🎉</div>
+          <h2>ئامادەیت!</h2>
+          <p>پێویستەکانت حیساب کران و تۆمارکرا</p>
+          <div class="result-card" id="result-content"></div>
+          <button class="btn btn-primary" onclick="window.location.href='home.html'">بچۆ بۆ ئەپەکە 🏠</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp }                                     from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword,
+             signInWithEmailAndPassword, onAuthStateChanged,
+             updateProfile }                                     from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc }                 from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    /* ── Firebase ── */
+    const app  = initializeApp({
+      apiKey:            "AIzaSyBhYiFcQeB2r6CWDiFvqV0LUPNVoow1sjM",
+      authDomain:        "appmass-f26bd.firebaseapp.com",
+      projectId:         "appmass-f26bd",
+      storageBucket:     "appmass-f26bd.firebasestorage.app",
+      messagingSenderId: "735578268323",
+      appId:             "1:735578268323:web:4f5e27ce1307db429bd516",
+      measurementId:     "G-HPBPQE5WFL"
+    });
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    /* ── State ── */
+    let od = { gender:null, activity:null, goal:null };
+    let currentUser = null;
+
+    /* ── Auth listener ── */
+    onAuthStateChanged(auth, async user => {
+      document.getElementById('loading-screen').style.display = 'none';
+      if (user) {
+        currentUser = user;
+        const snap = await getDoc(doc(db,'users',user.uid));
+        if (snap.exists() && snap.data().done) {
+          cacheUser(user, snap.data().profile);
+          window.location.href = 'home.html';
+        } else {
+          showView('view-onboarding');
+        }
+      } else {
+        showView('view-auth');
+      }
+    });
+
+    /* ── Helpers ── */
+    function showView(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function showErr(id,msg){ const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; setTimeout(()=>el.style.display='none',5000); }
+    function setBtn(id,loading,label){ const b=document.getElementById(id); b.disabled=loading; b.textContent=loading?'⏳ چاوەڕوان...':label; }
+    function cacheUser(user, profile){
+      localStorage.setItem('rkf_uid',   user.uid);
+      localStorage.setItem('rkf_name',  user.displayName||'');
+      localStorage.setItem('rkf_email', user.email||'');
+      if(profile) localStorage.setItem('rkf_profile', JSON.stringify(profile));
+    }
+    function firebaseMsg(code){
+      return ({
+        'auth/email-already-in-use':'ئەم ئیمەیلە پێشتر تۆمارکراوە',
+        'auth/invalid-email':'ئیمەیلەکە دروست نییە',
+        'auth/weak-password':'وشەی نهێنی زۆر سووک — لانیکەم ٦ پیت',
+        'auth/user-not-found':'ئەم ئیمەیلە تۆمارنەکراوە',
+        'auth/wrong-password':'وشەی نهێنی هەڵەیە',
+        'auth/invalid-credential':'ئیمەیل یان وشەی نهێنی هەڵەیە',
+        'auth/too-many-requests':'زۆر جار هەوڵت دا — کەمێک چاوەڕوان بە',
+        'auth/network-request-failed':'کێشەی ئینتەرنێت',
+      })[code] || 'هەڵەیەک ڕوویدا — دووبارە هەوڵ بدە';
+    }
+    function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+    /* ── Login ── */
+    window.doLogin = async()=>{
+      const email = document.getElementById('l-email').value.trim();
+      const pass  = document.getElementById('l-pass').value;
+      if(!email||!pass){ showErr('err-login','تکایە هەموو خانەکان پڕ بکەوە'); return; }
+      setBtn('btn-login',true,'چوونەژوورەوە ←');
+      try{ await signInWithEmailAndPassword(auth,email,pass); }
+      catch(e){ showErr('err-login',firebaseMsg(e.code)); setBtn('btn-login',false,'چوونەژوورەوە ←'); }
+    };
+
+    /* ── Register ── */
+    window.doRegister = async()=>{
+      const name  = document.getElementById('r-name').value.trim();
+      const email = document.getElementById('r-email').value.trim();
+      const pass  = document.getElementById('r-pass').value;
+      if(!name||!email||!pass){ showErr('err-reg','تکایە هەموو خانەکان پڕ بکەوە'); return; }
+      if(pass.length<6){ showErr('err-reg','وشەی نهێنی لانیکەم ٦ پیت پێویستە'); return; }
+      setBtn('btn-reg',true,'دروستکردنی ئەکاونت ←');
+      try{
+        const cred = await createUserWithEmailAndPassword(auth,email,pass);
+        await updateProfile(cred.user,{displayName:name});
+        await setDoc(doc(db,'users',cred.user.uid),{name,email,done:false,createdAt:new Date().toISOString()});
+      } catch(e){ showErr('err-reg',firebaseMsg(e.code)); setBtn('btn-reg',false,'دروستکردنی ئەکاونت ←'); }
+    };
+
+    /* ── Tab switch ── */
+    window.switchTab = t=>{
+      document.getElementById('tab-login').classList.toggle('active',t==='login');
+      document.getElementById('tab-register').classList.toggle('active',t==='register');
+      document.getElementById('form-login').style.display   = t==='login'    ? 'block':'none';
+      document.getElementById('form-register').style.display= t==='register' ? 'block':'none';
+    };
+
+    /* ── Onboarding helpers ── */
+    window.selGender = g=>{ od.gender=g; document.getElementById('btn-male').classList.toggle('selected',g==='male'); document.getElementById('btn-female').classList.toggle('selected',g==='female'); };
+    window.selAct    = a=>{ od.activity=a; document.querySelectorAll('[data-a]').forEach(el=>el.classList.toggle('selected-blue',el.dataset.a===a)); };
+    window.selGoal   = g=>{ od.goal=g;    document.querySelectorAll('[data-g]').forEach(el=>el.classList.toggle('selected-green',el.dataset.g===g)); };
+    window.adj = (field,delta)=>{
+      const ids={age:'v-age',weight:'v-weight',height:'v-height'};
+      const inp=document.getElementById(ids[field]);
+      let v=parseFloat(inp.value)+delta;
+      v=Math.max(parseFloat(inp.min),Math.min(parseFloat(inp.max),v));
+      inp.value=field==='weight'?v.toFixed(1):Math.round(v);
+    };
+    window.goStep = cur=>{
+      if(cur===0){ if(!od.gender){alert('تکایە ڕەگەزت هەڵبژێرە');return;} od.age=parseInt(document.getElementById('v-age').value); }
+      if(cur===1){ od.weight=parseFloat(document.getElementById('v-weight').value); od.height=parseInt(document.getElementById('v-height').value); }
+      document.getElementById('s'+cur).style.display='none';
+      document.getElementById('d'+cur).classList.replace('active','done');
+      document.getElementById('s'+(cur+1)).style.display='block';
+      document.getElementById('d'+(cur+1)).classList.add('active');
+    };
+
+    /* ── Finish onboarding ── */
+    window.finishOnboard = async()=>{
+      if(!od.activity){alert('تکایە ئاستی چالاکیت هەڵبژێرە');return;}
+      if(!od.goal)    {alert('تکایە ئامانجت هەڵبژێرە');return;}
+      od.weight=parseFloat(document.getElementById('v-weight').value);
+      od.height=parseInt(document.getElementById('v-height').value);
+      od.age   =parseInt(document.getElementById('v-age').value);
+
+      let bmr=(10*od.weight)+(6.25*od.height)-(5*od.age)+(od.gender==='male'?5:-161);
+      const am={sedentary:1.2,light:1.375,moderate:1.55,active:1.725};
+      let tdee=bmr*am[od.activity];
+      if(od.goal==='lose') tdee-=500;
+      if(od.goal==='gain') tdee+=300;
+      tdee=Math.round(tdee);
+      const protein=Math.round(od.weight*1.8);
+      const fat    =Math.round((tdee*0.27)/9);
+      const carbs  =Math.round((tdee-(protein*4)-(fat*9))/4);
+      const profile={...od,bmr:Math.round(bmr),tdee,goals:{calories:tdee,protein,fat,carbs,water:od.weight>80?10:8}};
+
+      document.getElementById('saving-info').style.display='block';
+      document.getElementById('btn-finish').disabled=true;
+      try{
+        await setDoc(doc(db,'users',currentUser.uid),{
+          name:currentUser.displayName, email:currentUser.email,
+          done:true, profile, updatedAt:new Date().toISOString()
+        });
+        cacheUser(currentUser, profile);
+        localStorage.setItem('rkf_today',JSON.stringify({date:todayStr(),water:0,sleep:7.5,sleepQ:'good',meals:[],workouts:[]}));
+
+        const goalNames={lose:'کەمکردنەوەی کێش 🔥',maintain:'پاراستنی کێش ⚖️',gain:'زیادکردنی ماس 💪'};
+        document.getElementById('result-content').innerHTML=`
+          <div class="result-row"><span class="result-label">کالۆری ڕۆژانە</span><span class="result-val">${tdee} cal</span></div>
+          <div class="result-row"><span class="result-label">پڕۆتین</span><span class="result-val">${protein}g</span></div>
+          <div class="result-row"><span class="result-label">کاربۆهیدرات</span><span class="result-val">${carbs}g</span></div>
+          <div class="result-row"><span class="result-label">چەوی</span><span class="result-val">${fat}g</span></div>
+          <div class="result-row"><span class="result-label">ئامانج</span><span class="result-val">${goalNames[od.goal]}</span></div>`;
+        showView('view-result');
+      } catch(e){
+        document.getElementById('saving-info').style.display='none';
+        document.getElementById('btn-finish').disabled=false;
+        alert('هەڵەیەک ڕوویدا: '+e.message);
+      }
+    };
+  </script>
+</body>
+</html>

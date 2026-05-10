@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ckb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RikFit - پڕۆفایل</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#07090E;--card:#0E1117;--card2:#161B24;--border:#1E2530;--blue:#0EA5E9;--blue-dim:rgba(14,165,233,0.12);--green:#10B981;--green-dim:rgba(16,185,129,0.12);--purple:#8B5CF6;--purple-dim:rgba(139,92,246,0.12);--orange:#F59E0B;--orange-dim:rgba(245,158,11,0.1);--red:#EF4444;--red-dim:rgba(239,68,68,0.1);--text:#F0F6FC;--text2:#8B949E;--text3:#3D4450;}
+    body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;min-height:100vh;padding-bottom:90px;}
+    .glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+    .g1{width:300px;height:300px;background:rgba(139,92,246,0.05);top:-80px;right:-80px;}
+    .g2{width:250px;height:250px;background:rgba(14,165,233,0.04);bottom:80px;left:-60px;}
+    .loading-screen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+    .spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin 0.8s linear infinite;}
+    .topbar{position:sticky;top:0;z-index:100;background:rgba(7,9,14,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:14px;}
+    .back-btn{width:38px;height:38px;border-radius:11px;border:1.5px solid var(--border);background:var(--card2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+    .back-btn:hover{border-color:var(--blue);color:var(--blue);}
+    .topbar h2{font-size:20px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#fff,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .page{padding:20px;position:relative;z-index:1;}
+    .prof-header{background:linear-gradient(135deg,rgba(14,165,233,0.1),rgba(139,92,246,0.1));border:1px solid rgba(139,92,246,0.2);border-radius:24px;padding:24px 20px;text-align:center;margin-bottom:16px;position:relative;}
+    .prof-edit-btn{position:absolute;top:16px;left:16px;width:38px;height:38px;border-radius:11px;border:1.5px solid var(--border);background:var(--card2);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+    .prof-edit-btn:hover{border-color:var(--blue);color:var(--blue);}
+    .prof-avatar{width:82px;height:82px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;color:#fff;box-shadow:0 0 30px rgba(139,92,246,0.3);}
+    .prof-name{font-size:22px;font-weight:900;margin-bottom:4px;}
+    .prof-email{font-size:13px;color:var(--text2);margin-bottom:12px;}
+    .prof-goal-badge{display:inline-block;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;background:var(--orange-dim);color:var(--orange);}
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+    .stat-box{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:14px 8px;text-align:center;}
+    .sb-icon{font-size:20px;margin-bottom:5px;}
+    .sb-val{font-size:17px;font-weight:900;}
+    .sb-label{font-size:10px;color:var(--text2);margin-top:3px;}
+    .prof-card{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:18px;margin-bottom:12px;}
+    .pc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .pc-title{font-size:14px;font-weight:800;}
+    .pc-edit{padding:6px 14px;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--blue);font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+    .pc-edit:hover{background:var(--blue-dim);border-color:var(--blue);}
+    .info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+    .info-row:last-child{border-bottom:none;}
+    .ir-label{font-size:13px;color:var(--text2);}
+    .ir-val{font-size:14px;font-weight:700;}
+    /* License card */
+    .lic-card{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(14,165,233,0.05));border:1px solid rgba(139,92,246,0.2);border-radius:20px;padding:18px;margin-bottom:12px;}
+    .lc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .lc-title{font-size:14px;font-weight:800;}
+    .lc-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;}
+    .lc-free{background:var(--red-dim);color:var(--red);}
+    .lc-pro{background:var(--green-dim);color:var(--green);}
+    .lic-input-wrap{display:flex;gap:10px;margin-bottom:8px;}
+    .lic-input{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;direction:ltr;text-align:center;letter-spacing:2px;transition:border-color 0.2s;}
+    .lic-input:focus{border-color:var(--purple);}
+    .lic-input::placeholder{color:var(--text3);letter-spacing:0;}
+    .btn-lic{padding:13px 16px;border-radius:12px;border:none;background:var(--purple);color:#fff;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+    .btn-lic:hover{background:#7C3AED;}
+    .btn-lic:disabled{opacity:0.6;cursor:not-allowed;}
+    .lic-msg{font-size:12px;font-weight:600;padding:9px 13px;border-radius:10px;margin-top:6px;display:none;}
+    .lic-err{background:var(--red-dim);color:var(--red);}
+    .lic-ok{background:var(--green-dim);color:var(--green);}
+    .btn-buy-lic{width:100%;padding:12px;border-radius:12px;border:1.5px solid rgba(139,92,246,0.3);background:transparent;color:var(--purple);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px;transition:all 0.2s;}
+    .btn-buy-lic:hover{background:var(--purple-dim);}
+    .pro-active-box{text-align:center;padding:12px 0;}
+    .pab-icon{font-size:44px;margin-bottom:10px;}
+    .pab-title{font-size:17px;font-weight:800;color:var(--green);margin-bottom:4px;}
+    .pab-sub{font-size:12px;color:var(--text2);margin-bottom:8px;}
+    .pab-code{font-size:11px;color:var(--text3);letter-spacing:2px;margin-bottom:4px;}
+    .pab-exp{font-size:12px;color:var(--orange);font-weight:600;margin-bottom:14px;}
+    .btn-deactivate{width:100%;padding:11px;border-radius:11px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+    .btn-deactivate:hover{border-color:var(--red);color:var(--red);}
+    .btn-logout{width:100%;padding:15px;border-radius:14px;border:1.5px solid var(--red);background:var(--red-dim);color:var(--red);font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
+    .btn-logout:hover{background:rgba(239,68,68,0.2);}
+    /* Bottom nav */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(14,17,23,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 20px 12px;}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--text3);transition:color 0.2s;padding:4px 0;}
+    .nav-icon{font-size:22px;}
+    .nav-label{font-size:11px;font-weight:600;}
+    /* Modals */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);}
+    .overlay.open{display:flex;}
+    .modal-sheet{background:var(--card);border-radius:28px 28px 0 0;border:1px solid var(--border);border-bottom:none;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;animation:slideUp 0.32s cubic-bezier(0.34,1.4,0.64,1);}
+    .modal-inner{padding:12px 20px 40px;}
+    .modal-handle{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px;}
+    .modal-title{font-size:18px;font-weight:800;margin-bottom:18px;}
+    .form-group{margin-bottom:16px;}
+    .form-label{display:block;font-size:12px;color:var(--text2);margin-bottom:7px;font-weight:700;}
+    .form-input{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;padding:13px 15px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:15px;outline:none;direction:rtl;transition:border-color 0.2s;}
+    .form-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-dim);}
+    .form-input::placeholder{color:var(--text3);}
+    .num-wrap{display:flex;align-items:center;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;}
+    .num-wrap input{border:none;background:transparent;text-align:center;font-size:19px;font-weight:800;flex:1;padding:13px 6px;color:var(--text);font-family:'Tajawal',sans-serif;outline:none;}
+    .nb{width:50px;min-height:52px;background:transparent;border:none;color:var(--purple);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;font-family:'Tajawal',sans-serif;}
+    .nb:hover{background:var(--purple-dim);}
+    .nu{padding:0 12px;color:var(--text2);font-size:12px;font-weight:600;white-space:nowrap;}
+    .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .gender-btn{padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--card2);color:var(--text2);cursor:pointer;text-align:center;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;transition:all 0.2s;}
+    .gender-btn .gi{font-size:24px;display:block;margin-bottom:5px;}
+    .gender-btn.selected{border-color:var(--purple);background:var(--purple-dim);color:var(--purple);}
+    .opt-item{padding:12px 14px;border-radius:12px;border:2px solid var(--border);background:var(--card2);cursor:pointer;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:all 0.2s;}
+    .opt-item.sel{border-color:var(--purple);background:var(--purple-dim);}
+    .opt-icon{font-size:20px;flex-shrink:0;}
+    .opt-name{font-weight:700;font-size:13px;}
+    .opt-desc{font-size:11px;color:var(--text2);margin-top:2px;}
+    .btn-save{width:100%;padding:15px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--purple),#6D28D9);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(139,92,246,0.3);transition:all 0.2s;margin-top:6px;}
+    .btn-save:hover{transform:translateY(-2px);}
+    .btn-save:disabled{opacity:0.6;transform:none;cursor:not-allowed;}
+    .modal-msg{padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;margin-bottom:14px;display:none;}
+    .modal-ok{background:var(--green-dim);color:var(--green);}
+    .modal-err{background:var(--red-dim);color:var(--red);}
+    .hint-box{background:var(--card2);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--text2);line-height:1.6;}
+    /* Buy */
+    .modal-tabs{display:flex;background:var(--card2);border-radius:13px;padding:4px;margin-bottom:20px;}
+    .mtab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text2);border:none;background:transparent;font-family:'Tajawal',sans-serif;transition:all 0.2s;}
+    .mtab.active{background:var(--purple);color:#fff;box-shadow:0 4px 12px rgba(139,92,246,0.3);}
+    .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+    .plan-card{border-radius:18px;padding:18px 14px;text-align:center;cursor:pointer;border:2px solid var(--border);background:var(--card2);transition:all 0.2s;position:relative;}
+    .plan-card.featured{border-color:var(--purple);background:var(--purple-dim);}
+    .plan-card.sel-plan{border-color:var(--blue);background:var(--blue-dim);}
+    .plan-rec{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:10px;font-weight:800;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+    .plan-icon{font-size:28px;margin-bottom:8px;display:block;}
+    .plan-name{font-size:13px;font-weight:800;margin-bottom:6px;}
+    .plan-price{font-size:22px;font-weight:900;}
+    .plan-lbl{font-size:10px;color:var(--text2);}
+    .plan-period{font-size:11px;color:var(--text2);margin-top:4px;}
+    .plan-save{font-size:11px;color:var(--green);font-weight:700;margin-top:3px;}
+    .contact-box{background:var(--card2);border-radius:16px;padding:16px;text-align:center;}
+    .contact-title{font-size:14px;font-weight:800;margin-bottom:6px;}
+    .contact-sub{font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6;}
+    .contact-btns{display:flex;gap:10px;}
+    .btn-contact{flex:1;padding:13px;border-radius:12px;border:none;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;}
+    .btn-tg{background:rgba(0,168,232,0.12);color:#00A8E8;}
+    .btn-wa{background:rgba(37,211,102,0.1);color:#25D366;}
+    .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 22px;font-size:14px;font-weight:700;z-index:400;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+    .toast.show{opacity:1;}
+    .toast.green{border-color:var(--green);color:var(--green);}
+    .toast.red{border-color:var(--red);color:var(--red);}
+    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+    @keyframes spin{to{transform:rotate(360deg);}}
+  </style>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen"><div class="spinner"></div></div>
+  <div class="glow g1"></div><div class="glow g2"></div>
+  <div class="toast" id="toast"></div>
+
+  <div class="topbar">
+    <button class="back-btn" onclick="history.back()">←</button>
+    <h2>👤 پڕۆفایل</h2>
+  </div>
+
+  <div class="page">
+
+    <div class="prof-header">
+      <button class="prof-edit-btn" onclick="openEditProfile()">✏️</button>
+      <div class="prof-avatar" id="prof-avatar">?</div>
+      <div class="prof-name"  id="prof-name">—</div>
+      <div class="prof-email" id="prof-email">—</div>
+      <div class="prof-goal-badge" id="prof-goal-badge">—</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-box"><div class="sb-icon">⚖️</div><div class="sb-val" id="s-weight">—</div><div class="sb-label">کیلۆ</div></div>
+      <div class="stat-box"><div class="sb-icon">📏</div><div class="sb-val" id="s-height">—</div><div class="sb-label">سانتیمەتر</div></div>
+      <div class="stat-box"><div class="sb-icon">🎂</div><div class="sb-val" id="s-age">—</div><div class="sb-label">ساڵ</div></div>
+      <div class="stat-box"><div class="sb-icon">💪</div><div class="sb-val" id="s-bmi">—</div><div class="sb-label">BMI</div></div>
+    </div>
+
+    <div class="prof-card">
+      <div class="pc-header"><div class="pc-title">🎯 ئامانجەکانت ڕۆژانە</div><button class="pc-edit" onclick="openEditGoals()">دەستکاری</button></div>
+      <div class="info-row"><span class="ir-label">🔥 کالۆری</span><span class="ir-val" id="gc-cal">—</span></div>
+      <div class="info-row"><span class="ir-label">🥩 پڕۆتین</span><span class="ir-val" id="gc-pro">—</span></div>
+      <div class="info-row"><span class="ir-label">🌾 کاربۆهیدرات</span><span class="ir-val" id="gc-carb">—</span></div>
+      <div class="info-row"><span class="ir-label">🥑 چەوی</span><span class="ir-val" id="gc-fat">—</span></div>
+      <div class="info-row"><span class="ir-label">💧 ئاو</span><span class="ir-val" id="gc-water">—</span></div>
+    </div>
+
+    <div class="prof-card">
+      <div class="pc-header"><div class="pc-title">🏃 زانیاری جەستە</div><button class="pc-edit" onclick="openEditProfile()">دەستکاری</button></div>
+      <div class="info-row"><span class="ir-label">ڕەگەز</span><span class="ir-val" id="bi-gender">—</span></div>
+      <div class="info-row"><span class="ir-label">ئاستی چالاکی</span><span class="ir-val" id="bi-act">—</span></div>
+      <div class="info-row"><span class="ir-label">BMR</span><span class="ir-val" id="bi-bmr">—</span></div>
+      <div class="info-row"><span class="ir-label">TDEE</span><span class="ir-val" id="bi-tdee">—</span></div>
+    </div>
+
+    <div class="prof-card">
+      <div class="pc-header"><div class="pc-title">🔒 پاراستنی ئەکاونت</div><button class="pc-edit" onclick="openChangePass()">گۆڕین</button></div>
+      <div class="info-row"><span class="ir-label">وشەی نهێنی</span><span class="ir-val">••••••••</span></div>
+      <div class="info-row"><span class="ir-label">ئیمەیل</span><span class="ir-val" id="sec-email" style="font-size:12px">—</span></div>
+    </div>
+
+    <!-- LICENSE — same logic as vitamins.html -->
+    <div class="lic-card">
+      <div class="lc-top">
+        <div class="lc-title">🔑 لایسینس PRO</div>
+        <div class="lc-badge lc-free" id="lc-badge">FREE</div>
+      </div>
+      <div id="lc-free-wrap">
+        <div class="lic-input-wrap">
+          <input type="text" class="lic-input" id="prof-lic-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
+          <button class="btn-lic" id="prof-lic-btn" onclick="doActivate('prof-lic-inp','prof-lic-err','prof-lic-ok','prof-lic-btn')">چالاک</button>
+        </div>
+        <div class="lic-msg lic-err" id="prof-lic-err">❌ کۆدەکە هەڵەیە</div>
+        <div class="lic-msg lic-ok"  id="prof-lic-ok">🎉 PRO چالاک کرا!</div>
+        <button class="btn-buy-lic" onclick="openBuyModal()">🛒 کۆد نییەتە؟ ئێرە بکڕە</button>
+      </div>
+      <div id="lc-pro-wrap" style="display:none">
+        <div class="pro-active-box">
+          <div class="pab-icon">🎉</div>
+          <div class="pab-title">PRO چالاکە!</div>
+          <div class="pab-sub">هەموو تایبەتمەندییەکان بەردەستن</div>
+          <div class="pab-code" id="pab-code"></div>
+          <div class="pab-exp"  id="pab-exp"></div>
+        </div>
+        <button class="btn-deactivate" onclick="deactivateLic()">لابردنی لایسینس</button>
+      </div>
+    </div>
+
+    <button class="btn-logout" onclick="doLogout()">چوونەدەرەوە 🚪</button>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="home.html"      class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">ماڵ</span></a>
+    <a href="nutrition.html" class="nav-item"><span class="nav-icon">🍽️</span><span class="nav-label">خۆراک</span></a>
+    <a href="vitamins.html"  class="nav-item"><span class="nav-icon">💊</span><span class="nav-label">ڤیتامین</span></a>
+  </nav>
+
+  <!-- MODAL: Edit Profile -->
+  <div class="overlay" id="modal-profile">
+    <div class="modal-sheet"><div class="modal-inner">
+      <div class="modal-handle"></div>
+      <div class="modal-title">✏️ دەستکاریکردنی پڕۆفایل</div>
+      <div class="modal-msg modal-err" id="err-profile"></div>
+      <div class="modal-msg modal-ok"  id="ok-profile"></div>
+      <div class="form-group"><label class="form-label">ناو</label><input type="text" class="form-input" id="ep-name" placeholder="ناوت بنووسە"></div>
+      <div class="form-group"><label class="form-label">ڕەگەز</label>
+        <div class="gender-grid">
+          <button class="gender-btn" id="ep-male"   onclick="selGender('male')"><span class="gi">👨</span>نێر</button>
+          <button class="gender-btn" id="ep-female" onclick="selGender('female')"><span class="gi">👩</span>مێ</button>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">تەمەن</label>
+        <div class="num-wrap"><button class="nb" onclick="adjN('ep-age',-1)">−</button><input type="number" id="ep-age" value="25" min="10" max="100"><span class="nu">ساڵ</span><button class="nb" onclick="adjN('ep-age',1)">+</button></div>
+      </div>
+      <div class="form-group"><label class="form-label">کێش</label>
+        <div class="num-wrap"><button class="nb" onclick="adjN('ep-weight',-0.5,0.5)">−</button><input type="number" id="ep-weight" value="70" step="0.5"><span class="nu">کیلۆ</span><button class="nb" onclick="adjN('ep-weight',0.5,0.5)">+</button></div>
+      </div>
+      <div class="form-group"><label class="form-label">باڵ</label>
+        <div class="num-wrap"><button class="nb" onclick="adjN('ep-height',-1)">−</button><input type="number" id="ep-height" value="170"><span class="nu">سانتیمەتر</span><button class="nb" onclick="adjN('ep-height',1)">+</button></div>
+      </div>
+      <div class="form-group"><label class="form-label">ئاستی چالاکی</label>
+        <div class="opt-item" data-act="sedentary" onclick="selAct('sedentary')"><span class="opt-icon">🛋️</span><div><div class="opt-name">کەم چالاک</div><div class="opt-desc">کار لە دیوان</div></div></div>
+        <div class="opt-item" data-act="light"     onclick="selAct('light')"><span class="opt-icon">🚶</span><div><div class="opt-name">سووک</div><div class="opt-desc">١-٣ ڕۆژ وەرزش</div></div></div>
+        <div class="opt-item" data-act="moderate"  onclick="selAct('moderate')"><span class="opt-icon">🏃</span><div><div class="opt-name">مامناوەند</div><div class="opt-desc">٣-٥ ڕۆژ وەرزش</div></div></div>
+        <div class="opt-item" data-act="active"    onclick="selAct('active')"><span class="opt-icon">⚡</span><div><div class="opt-name">زۆر چالاک</div><div class="opt-desc">٦-٧ ڕۆژ وەرزش</div></div></div>
+      </div>
+      <div class="form-group"><label class="form-label">ئامانج</label>
+        <div class="opt-item" data-goal="lose"     onclick="selGoal('lose')"><span class="opt-icon">🔥</span><div><div class="opt-name">کەمکردنەوەی کێش</div></div></div>
+        <div class="opt-item" data-goal="maintain" onclick="selGoal('maintain')"><span class="opt-icon">⚖️</span><div><div class="opt-name">پاراستنی کێش</div></div></div>
+        <div class="opt-item" data-goal="gain"     onclick="selGoal('gain')"><span class="opt-icon">💪</span><div><div class="opt-name">زیادکردنی ماس</div></div></div>
+      </div>
+      <button class="btn-save" id="btn-save-profile" onclick="saveProfile()">💾 تۆمارکردن</button>
+    </div></div>
+  </div>
+
+  <!-- MODAL: Edit Goals -->
+  <div class="overlay" id="modal-goals">
+    <div class="modal-sheet"><div class="modal-inner">
+      <div class="modal-handle"></div>
+      <div class="modal-title">🎯 دەستکاریکردنی ئامانج</div>
+      <div class="modal-msg modal-ok" id="ok-goals"></div>
+      <div class="hint-box">💡 دەتوانیت ئامانجەکانت بەدەستی دیاری بکەیت، یان پڕۆفایلەکەت نوێ بکەیتەوە تا بەخۆی حیساببکرێت</div>
+      <div class="form-group"><label class="form-label">🔥 کالۆری</label><div class="num-wrap"><button class="nb" onclick="adjN('eg-cal',-50)">−</button><input type="number" id="eg-cal" value="2000"><span class="nu">cal</span><button class="nb" onclick="adjN('eg-cal',50)">+</button></div></div>
+      <div class="form-group"><label class="form-label">🥩 پڕۆتین</label><div class="num-wrap"><button class="nb" onclick="adjN('eg-pro',-5)">−</button><input type="number" id="eg-pro" value="120"><span class="nu">g</span><button class="nb" onclick="adjN('eg-pro',5)">+</button></div></div>
+      <div class="form-group"><label class="form-label">🌾 کاربۆهیدرات</label><div class="num-wrap"><button class="nb" onclick="adjN('eg-carb',-5)">−</button><input type="number" id="eg-carb" value="250"><span class="nu">g</span><button class="nb" onclick="adjN('eg-carb',5)">+</button></div></div>
+      <div class="form-group"><label class="form-label">🥑 چەوی</label><div class="num-wrap"><button class="nb" onclick="adjN('eg-fat',-5)">−</button><input type="number" id="eg-fat" value="60"><span class="nu">g</span><button class="nb" onclick="adjN('eg-fat',5)">+</button></div></div>
+      <div class="form-group"><label class="form-label">💧 ئاو</label><div class="num-wrap"><button class="nb" onclick="adjN('eg-water',-1)">−</button><input type="number" id="eg-water" value="8"><span class="nu">شیشە</span><button class="nb" onclick="adjN('eg-water',1)">+</button></div></div>
+      <button class="btn-save" onclick="saveGoals()">💾 تۆمارکردن</button>
+    </div></div>
+  </div>
+
+  <!-- MODAL: Change Password -->
+  <div class="overlay" id="modal-pass">
+    <div class="modal-sheet"><div class="modal-inner">
+      <div class="modal-handle"></div>
+      <div class="modal-title">🔒 گۆڕینی وشەی نهێنی</div>
+      <div class="modal-msg modal-err" id="err-pass"></div>
+      <div class="modal-msg modal-ok"  id="ok-pass"></div>
+      <div class="form-group"><label class="form-label">وشەی نهێنی ئێستا</label><input type="password" class="form-input" id="pass-cur" placeholder="وشەی نهێنی ئێستا"></div>
+      <div class="form-group"><label class="form-label">وشەی نهێنی نوێ</label><input type="password" class="form-input" id="pass-new" placeholder="لانیکەم ٦ پیت"></div>
+      <div class="form-group"><label class="form-label">دووبارە وشەی نهێنی نوێ</label><input type="password" class="form-input" id="pass-conf" placeholder="دووبارە بنووسە"></div>
+      <button class="btn-save" id="btn-save-pass" onclick="changePass()">🔒 گۆڕین</button>
+    </div></div>
+  </div>
+
+  <!-- MODAL: Buy -->
+  <div class="overlay" id="modal-buy">
+    <div class="modal-sheet"><div class="modal-inner">
+      <div class="modal-handle"></div>
+      <div class="modal-tabs">
+        <button class="mtab active" id="mtab-code" onclick="switchBuyTab('code')">🔑 کۆدم هەیە</button>
+        <button class="mtab"        id="mtab-buy"  onclick="switchBuyTab('buy')">🛒 کۆد بکڕم</button>
+      </div>
+      <div id="msec-code">
+        <div style="font-size:17px;font-weight:800;margin-bottom:6px">کۆدت داخڵ بکە</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px">شێوەی کۆد: <span style="color:var(--purple);font-weight:800;letter-spacing:2px">RIKFIT-XXXX-XXXX-XXXX</span></div>
+        <div class="lic-input-wrap">
+          <input type="text" class="lic-input" id="modal-lic-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
+          <button class="btn-lic" id="modal-lic-btn" onclick="doActivate('modal-lic-inp','modal-lic-err','modal-lic-ok','modal-lic-btn')">چالاک</button>
+        </div>
+        <div class="lic-msg lic-err" id="modal-lic-err">❌ کۆدەکە هەڵەیە</div>
+        <div class="lic-msg lic-ok"  id="modal-lic-ok">🎉 PRO چالاک کرا!</div>
+      </div>
+      <div id="msec-buy" style="display:none">
+        <div style="font-size:17px;font-weight:800;margin-bottom:6px">پلانی RikFit PRO 🚀</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:18px">پلانی خۆت هەڵبژێرە پاشان پێوەندی بکە</div>
+        <div class="plan-grid">
+          <div class="plan-card" id="pl-w" onclick="selPlan('weekly')"><span class="plan-icon">⚡</span><div class="plan-name">هەفتانە</div><div class="plan-price">٦٠٠٠</div><div class="plan-lbl">دینار</div><div class="plan-period">٧ ڕۆژ</div></div>
+          <div class="plan-card featured sel-plan" id="pl-m" onclick="selPlan('monthly')"><div class="plan-rec">پێشنیار ✓</div><span class="plan-icon">🌟</span><div class="plan-name">مانگانە</div><div class="plan-price">٢٠٠٠٠</div><div class="plan-lbl">دینار</div><div class="plan-period">٣٠ ڕۆژ</div><div class="plan-save">٤٠٠٠ دینار خەزن!</div></div>
+        </div>
+        <div class="contact-box">
+          <div class="contact-title">📩 پێوەندی بکە بۆ کڕین</div>
+          <div class="contact-sub">کۆدەکەت لە کەمتر لە ٥ خولەک دەگاتێت</div>
+          <div class="contact-btns">
+            <button class="btn-contact btn-tg" onclick="openTg()">✈️ تێلیگرام</button>
+            <button class="btn-contact btn-wa" onclick="openWa()">💬 واتساپ</button>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp }                           from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut,
+             updateProfile, EmailAuthProvider,
+             reauthenticateWithCredential,
+             updatePassword }                         from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc }   from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const app=initializeApp({apiKey:"AIzaSyBhYiFcQeB2r6CWDiFvqV0LUPNVoow1sjM",authDomain:"appmass-f26bd.firebaseapp.com",projectId:"appmass-f26bd",storageBucket:"appmass-f26bd.firebasestorage.app",messagingSenderId:"735578268323",appId:"1:735578268323:web:4f5e27ce1307db429bd516"});
+    const auth=getAuth(app), db=getFirestore(app);
+    const actNames={sedentary:'کەم چالاک',light:'سووک',moderate:'مامناوەند',active:'زۆر چالاک'};
+    const goalNames={lose:'کەمکردنەوەی کێش 🔥',maintain:'پاراستنی کێش ⚖️',gain:'زیادکردنی ماس 💪'};
+    let CU=null, epGender=null, epAct=null, epGoal=null, selPlanVal='monthly';
+
+    onAuthStateChanged(auth, async user=>{
+      if(!user){window.location.href='index.html';return;}
+      CU=user;
+      // ── Sync from Firestore (same logic as vitamins.html) ──
+      try{
+        const snap=await getDoc(doc(db,'users',user.uid));
+        if(snap.exists()){
+          const d=snap.data();
+          if(d.profile) localStorage.setItem('rkf_profile',JSON.stringify(d.profile));
+        }
+      }catch(e){}
+      // ── Check license from licenses collection (same as vitamins.html) ──
+      await syncLicenseFromFirestore();
+      document.getElementById('loading-screen').style.display='none';
+      loadUI(user);
+      updLicUI();
+    });
+
+    // ═══════════════════════════════════════════════════
+    // LICENSE — exact same logic as vitamins.html
+    // ═══════════════════════════════════════════════════
+    async function syncLicenseFromFirestore(){
+      const code=localStorage.getItem('rkf_license_code');
+      if(!code)return;
+      try{
+        const snap=await getDoc(doc(db,'licenses',code));
+        if(!snap.exists()||!snap.data().active){clearLic();return;}
+        const lic=snap.data();
+        const now=Date.now();
+        if(lic.expiresAt&&parseInt(lic.expiresAt)<now){
+          localStorage.setItem('rkf_pro','expired');
+        }else{
+          localStorage.setItem('rkf_pro','1');
+          if(lic.expiresAt)localStorage.setItem('rkf_pro_expires',lic.expiresAt);
+        }
+      }catch(e){}
+    }
+
+    function clearLic(){localStorage.removeItem('rkf_pro');localStorage.removeItem('rkf_license_code');localStorage.removeItem('rkf_pro_expires');}
+    function isPro(){
+      if(localStorage.getItem('rkf_pro')!=='1')return false;
+      const exp=localStorage.getItem('rkf_pro_expires');
+      if(!exp)return true;
+      if(Date.now()>parseInt(exp)){localStorage.setItem('rkf_pro','expired');return false;}
+      return true;
+    }
+
+    function updLicUI(){
+      const pro=isPro();
+      document.getElementById('lc-badge').textContent=pro?'PRO ✓':'FREE';
+      document.getElementById('lc-badge').className='lc-badge '+(pro?'lc-pro':'lc-free');
+      document.getElementById('lc-free-wrap').style.display=pro?'none':'block';
+      document.getElementById('lc-pro-wrap').style.display=pro?'block':'none';
+      if(pro){
+        document.getElementById('pab-code').textContent=localStorage.getItem('rkf_license_code')||'';
+        const exp=localStorage.getItem('rkf_pro_expires');
+        if(exp){const d=new Date(parseInt(exp));document.getElementById('pab-exp').textContent='⏰ بەسەردەچێت: '+d.toLocaleDateString('en-GB');}
+      }
+    }
+
+    // ── Activate — exact same function as vitamins.html ──
+    window.doActivate=async(inpId,errId,okId,btnId)=>{
+      const code=document.getElementById(inpId).value.trim().toUpperCase();
+      const errEl=document.getElementById(errId),okEl=document.getElementById(okId),btn=document.getElementById(btnId);
+      errEl.style.display='none';okEl.style.display='none';
+      if(code.length<14){errEl.style.display='block';return;}
+      btn.textContent='...';btn.disabled=true;
+      try{
+        const snap=await getDoc(doc(db,'licenses',code));
+        if(!snap.exists()||!snap.data().active){errEl.textContent='❌ کۆدەکە هەڵەیە یان ڕاگیراوە';errEl.style.display='block';btn.textContent='چالاک';btn.disabled=false;return;}
+        const lic=snap.data();
+        if(lic.usedBy&&lic.usedBy!==CU.email){errEl.textContent='❌ ئەم کۆدە پێشتر بەکارهاتووە';errEl.style.display='block';btn.textContent='چالاک';btn.disabled=false;return;}
+        const now=Date.now();
+        let expiresAt=lic.expiresAt?parseInt(lic.expiresAt):now+(lic.durationMs||30*24*60*60*1000);
+        if(expiresAt<now){errEl.textContent='❌ ئەم کۆدە بەسەرچووە';errEl.style.display='block';btn.textContent='چالاک';btn.disabled=false;return;}
+        await updateDoc(doc(db,'licenses',code),{usedBy:CU.email,expiresAt:String(expiresAt),activatedAt:new Date().toISOString()});
+        // Save to localStorage — same keys as vitamins.html
+        localStorage.setItem('rkf_pro','1');
+        localStorage.setItem('rkf_license_code',code);
+        localStorage.setItem('rkf_pro_expires',String(expiresAt));
+        // Save to user doc
+        try{await updateDoc(doc(db,'users',CU.uid),{pro:true,licenseCode:code,proExpires:String(expiresAt)});}catch(e){}
+        okEl.style.display='block';updLicUI();toast('🎉 بەخێربێیت PRO!','green');
+        setTimeout(()=>document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open')),1400);
+      }catch(e){errEl.textContent='❌ هەڵەیەک ڕوویدا';errEl.style.display='block';}
+      btn.textContent='چالاک';btn.disabled=false;
+    };
+
+    window.deactivateLic=async()=>{
+      if(!confirm('دڵنیایت؟'))return;
+      clearLic();
+      try{await updateDoc(doc(db,'users',CU.uid),{pro:false,licenseCode:'',proExpires:''});}catch(e){}
+      updLicUI();toast('لایسینس لابرا','red');
+    };
+
+    window.fmtLic=inp=>{let v=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'');const parts=[];if(v.startsWith('RIKFIT')){parts.push('RIKFIT');v=v.slice(6);}while(v.length>0){parts.push(v.slice(0,4));v=v.slice(4);}inp.value=parts.join('-').slice(0,22);};
+
+    // ── Profile data ──
+    function loadUI(user){
+      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}'),goals=prof.goals||{};
+      document.getElementById('prof-avatar').textContent=(user.displayName||'?')[0].toUpperCase();
+      document.getElementById('prof-name').textContent=user.displayName||'—';
+      document.getElementById('prof-email').textContent=user.email||'—';
+      document.getElementById('sec-email').textContent=user.email||'—';
+      document.getElementById('prof-goal-badge').textContent=goalNames[prof.goal]||'—';
+      document.getElementById('s-weight').textContent=prof.weight||'—';
+      document.getElementById('s-height').textContent=prof.height||'—';
+      document.getElementById('s-age').textContent=prof.age||'—';
+      if(prof.weight&&prof.height)document.getElementById('s-bmi').textContent=(prof.weight/Math.pow(prof.height/100,2)).toFixed(1);
+      document.getElementById('gc-cal').textContent=(goals.calories||'—')+' cal';
+      document.getElementById('gc-pro').textContent=(goals.protein||'—')+'g';
+      document.getElementById('gc-carb').textContent=(goals.carbs||'—')+'g';
+      document.getElementById('gc-fat').textContent=(goals.fat||'—')+'g';
+      document.getElementById('gc-water').textContent=(goals.water||8)+' شیشە';
+      document.getElementById('bi-gender').textContent=prof.gender==='male'?'👨 نێر':'👩 مێ';
+      document.getElementById('bi-act').textContent=actNames[prof.activity]||'—';
+      document.getElementById('bi-bmr').textContent=(prof.bmr||'—')+' cal';
+      document.getElementById('bi-tdee').textContent=(prof.tdee||'—')+' cal';
+    }
+
+    // ── Edit Profile ──
+    window.openEditProfile=()=>{
+      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
+      document.getElementById('ep-name').value=CU.displayName||'';
+      document.getElementById('ep-age').value=prof.age||25;
+      document.getElementById('ep-weight').value=prof.weight||70;
+      document.getElementById('ep-height').value=prof.height||170;
+      epGender=prof.gender||null;epAct=prof.activity||null;epGoal=prof.goal||null;
+      if(epGender){document.getElementById('ep-male').classList.toggle('selected',epGender==='male');document.getElementById('ep-female').classList.toggle('selected',epGender==='female');}
+      if(epAct)document.querySelectorAll('[data-act]').forEach(el=>el.classList.toggle('sel',el.dataset.act===epAct));
+      if(epGoal)document.querySelectorAll('[data-goal]').forEach(el=>el.classList.toggle('sel',el.dataset.goal===epGoal));
+      document.getElementById('err-profile').style.display='none';
+      document.getElementById('ok-profile').style.display='none';
+      document.getElementById('modal-profile').classList.add('open');
+    };
+    window.selGender=g=>{epGender=g;document.getElementById('ep-male').classList.toggle('selected',g==='male');document.getElementById('ep-female').classList.toggle('selected',g==='female');};
+    window.selAct=a=>{epAct=a;document.querySelectorAll('[data-act]').forEach(el=>el.classList.toggle('sel',el.dataset.act===a));};
+    window.selGoal=g=>{epGoal=g;document.querySelectorAll('[data-goal]').forEach(el=>el.classList.toggle('sel',el.dataset.goal===g));};
+    window.saveProfile=async()=>{
+      const name=document.getElementById('ep-name').value.trim();
+      const age=parseInt(document.getElementById('ep-age').value)||25;
+      const weight=parseFloat(document.getElementById('ep-weight').value)||70;
+      const height=parseInt(document.getElementById('ep-height').value)||170;
+      if(!name){showMsg('err-profile','تکایە ناوت بنووسە');return;}
+      if(!epGender){showMsg('err-profile','تکایە ڕەگەزت هەڵبژێرە');return;}
+      if(!epAct){showMsg('err-profile','تکایە ئاستی چالاکیت هەڵبژێرە');return;}
+      if(!epGoal){showMsg('err-profile','تکایە ئامانجت هەڵبژێرە');return;}
+      const btn=document.getElementById('btn-save-profile');btn.disabled=true;btn.textContent='⏳...';
+      let bmr=(10*weight)+(6.25*height)-(5*age)+(epGender==='male'?5:-161);
+      const am={sedentary:1.2,light:1.375,moderate:1.55,active:1.725};
+      let tdee=bmr*am[epAct];
+      if(epGoal==='lose')tdee-=500;if(epGoal==='gain')tdee+=300;tdee=Math.round(tdee);
+      const protein=Math.round(weight*1.8),fat=Math.round(tdee*0.27/9),carbs=Math.round((tdee-protein*4-fat*9)/4);
+      const oldProf=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
+      const newProf={...oldProf,gender:epGender,age,weight,height,activity:epAct,goal:epGoal,bmr:Math.round(bmr),tdee,goals:{calories:tdee,protein,fat,carbs,water:weight>80?10:8}};
+      try{
+        await updateProfile(CU,{displayName:name});
+        await updateDoc(doc(db,'users',CU.uid),{name,profile:newProf});
+        localStorage.setItem('rkf_profile',JSON.stringify(newProf));
+        showMsg('ok-profile','✅ تۆمارکرا!');loadUI(CU);toast('✅ پڕۆفایل نوێکرایەوە','green');
+        setTimeout(()=>document.getElementById('modal-profile').classList.remove('open'),1200);
+      }catch(e){showMsg('err-profile','هەڵەیەک: '+e.message);}
+      btn.disabled=false;btn.textContent='💾 تۆمارکردن';
+    };
+
+    // ── Edit Goals ──
+    window.openEditGoals=()=>{
+      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}'),goals=prof.goals||{calories:2000,protein:120,carbs:250,fat:60,water:8};
+      document.getElementById('eg-cal').value=goals.calories;document.getElementById('eg-pro').value=goals.protein;
+      document.getElementById('eg-carb').value=goals.carbs;document.getElementById('eg-fat').value=goals.fat;
+      document.getElementById('eg-water').value=goals.water||8;
+      document.getElementById('ok-goals').style.display='none';
+      document.getElementById('modal-goals').classList.add('open');
+    };
+    window.saveGoals=async()=>{
+      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
+      prof.goals={calories:parseInt(document.getElementById('eg-cal').value)||2000,protein:parseInt(document.getElementById('eg-pro').value)||120,carbs:parseInt(document.getElementById('eg-carb').value)||250,fat:parseInt(document.getElementById('eg-fat').value)||60,water:parseInt(document.getElementById('eg-water').value)||8};
+      try{
+        await updateDoc(doc(db,'users',CU.uid),{profile:prof});
+        localStorage.setItem('rkf_profile',JSON.stringify(prof));
+        showMsg('ok-goals','✅ تۆمارکران!');loadUI(CU);toast('✅ ئامانجەکان نوێکرانەوە','green');
+        setTimeout(()=>document.getElementById('modal-goals').classList.remove('open'),1200);
+      }catch(e){toast('هەڵەیەک ڕوویدا','red');}
+    };
+
+    // ── Change Password ──
+    window.openChangePass=()=>{
+      ['pass-cur','pass-new','pass-conf'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('err-pass').style.display='none';document.getElementById('ok-pass').style.display='none';
+      document.getElementById('modal-pass').classList.add('open');
+    };
+    window.changePass=async()=>{
+      const cur=document.getElementById('pass-cur').value,nw=document.getElementById('pass-new').value,conf=document.getElementById('pass-conf').value;
+      if(!cur||!nw||!conf){showMsg('err-pass','تکایە هەموو خانەکان پڕ بکەوە');return;}
+      if(nw.length<6){showMsg('err-pass','وشەی نهێنی نوێ لانیکەم ٦ پیت پێویستە');return;}
+      if(nw!==conf){showMsg('err-pass','وشەی نهێنی نوێ یەکسان نییە');return;}
+      const btn=document.getElementById('btn-save-pass');btn.disabled=true;btn.textContent='⏳...';
+      try{
+        await reauthenticateWithCredential(CU,EmailAuthProvider.credential(CU.email,cur));
+        await updatePassword(CU,nw);
+        showMsg('ok-pass','✅ وشەی نهێنی گۆڕدرا!');toast('✅ وشەی نهێنی نوێکرایەوە','green');
+        setTimeout(()=>document.getElementById('modal-pass').classList.remove('open'),1400);
+      }catch(e){
+        const msgs={'auth/wrong-password':'وشەی نهێنی ئێستا هەڵەیە','auth/too-many-requests':'زۆر جار هەوڵت دا'};
+        showMsg('err-pass',msgs[e.code]||'هەڵەیەک ڕوویدا');
+      }
+      btn.disabled=false;btn.textContent='🔒 گۆڕین';
+    };
+
+    // ── Buy modal ──
+    window.openBuyModal=()=>{
+      document.getElementById('modal-lic-inp').value='';
+      document.getElementById('modal-lic-err').style.display='none';
+      document.getElementById('modal-lic-ok').style.display='none';
+      document.getElementById('modal-buy').classList.add('open');
+      switchBuyTab('code');
+    };
+    window.switchBuyTab=t=>{document.getElementById('mtab-code').classList.toggle('active',t==='code');document.getElementById('mtab-buy').classList.toggle('active',t==='buy');document.getElementById('msec-code').style.display=t==='code'?'block':'none';document.getElementById('msec-buy').style.display=t==='buy'?'block':'none';};
+    window.selPlan=p=>{selPlanVal=p;document.getElementById('pl-w').classList.toggle('sel-plan',p==='weekly');document.getElementById('pl-m').classList.toggle('sel-plan',p==='monthly');};
+    window.openTg=()=>window.open(`https://t.me/YourUsername?text=${encodeURIComponent(`سڵاو، دەمەوێت پلانی ${selPlanVal==='monthly'?'مانگانە':'هەفتانە'} ی RikFit PRO بکڕم`)}`,'_blank');
+    window.openWa=()=>window.open(`https://wa.me/9647XXXXXXXXX?text=${encodeURIComponent(`سڵاو، دەمەوێت پلانی ${selPlanVal==='monthly'?'مانگانە':'هەفتانە'} ی RikFit PRO بکڕم`)}`,'_blank');
+
+    // ── Logout ──
+    window.doLogout=async()=>{
+      if(!confirm('دڵنیایت لە چوونەدەرەوە؟'))return;
+      await signOut(auth);
+      ['rkf_pro','rkf_license_code','rkf_pro_expires','rkf_profile'].forEach(k=>localStorage.removeItem(k));
+      window.location.href='index.html';
+    };
+
+    // ── Helpers ──
+    window.adjN=(id,d,step=1)=>{const inp=document.getElementById(id);let v=parseFloat(inp.value)+d;if(inp.min)v=Math.max(parseFloat(inp.min),v);if(inp.max)v=Math.min(parseFloat(inp.max),v);inp.value=step<1?v.toFixed(1):Math.round(v);};
+    function showMsg(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';setTimeout(()=>el.style.display='none',4000);}
+    function toast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');setTimeout(()=>t.className='toast',2500);}
+    document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+  </script>
+</body>
+</html>

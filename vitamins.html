@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ckb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RikFit - ڤیتامین</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--bg:#07090E;--card:#0E1117;--card2:#161B24;--border:#1E2530;--blue:#0EA5E9;--blue-dim:rgba(14,165,233,0.12);--green:#10B981;--green-dim:rgba(16,185,129,0.12);--purple:#8B5CF6;--purple-dim:rgba(139,92,246,0.12);--orange:#F59E0B;--red:#EF4444;--red-dim:rgba(239,68,68,0.1);--text:#F0F6FC;--text2:#8B949E;--text3:#3D4450;}
+    body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;min-height:100vh;padding-bottom:90px;}
+    .glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+    .g1{width:300px;height:300px;background:rgba(139,92,246,0.05);top:-80px;right:-80px;}
+    .loading-screen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+    .spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin 0.8s linear infinite;}
+    .topbar{position:sticky;top:0;z-index:100;background:rgba(7,9,14,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .topbar-title{padding:16px 20px 0;display:flex;justify-content:space-between;align-items:center;}
+    .topbar-title h2{font-size:20px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#fff,var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .pro-badge{padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;}
+    .pb-free{background:var(--red-dim);color:var(--red);}
+    .pb-pro{background:var(--green-dim);color:var(--green);}
+    .top-tabs{display:flex;padding:10px 12px;gap:8px;}
+    .tt{flex:1;padding:11px;text-align:center;border-radius:13px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border:none;background:transparent;font-family:'Tajawal',sans-serif;transition:all 0.2s;}
+    .tt.active{background:var(--card2);color:var(--text);}
+    .tt .ti{display:block;font-size:20px;margin-bottom:3px;}
+    .page{padding:20px;position:relative;z-index:1;display:none;}
+    .page.active{display:block;}
+    .sec-title{font-size:13px;font-weight:800;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin:22px 0 12px;}
+
+    /* Lock */
+    .lock-banner{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(14,165,233,0.06));border:1px solid rgba(139,92,246,0.2);border-radius:24px;padding:28px 20px;text-align:center;}
+    .lb-glow{font-size:56px;margin-bottom:14px;display:block;}
+    .lb-title{font-size:19px;font-weight:900;margin-bottom:8px;}
+    .lb-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.7;}
+    .lb-features{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;text-align:right;}
+    .lbf-item{display:flex;align-items:center;gap:10px;font-size:13px;background:var(--card2);padding:10px 14px;border-radius:12px;}
+    .code-row{display:flex;gap:10px;margin-bottom:8px;}
+    .lic-inp{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;direction:ltr;text-align:center;letter-spacing:2px;transition:border-color 0.2s;}
+    .lic-inp:focus{border-color:var(--purple);}
+    .lic-inp::placeholder{color:var(--text3);letter-spacing:0;}
+    .btn-act{padding:13px 16px;border-radius:12px;border:none;background:var(--purple);color:#fff;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+    .btn-act:disabled{opacity:0.6;cursor:not-allowed;}
+    .lic-msg{font-size:12px;font-weight:600;padding:9px 13px;border-radius:10px;margin-top:6px;display:none;}
+    .lic-err{background:var(--red-dim);color:var(--red);}
+    .lic-ok{background:var(--green-dim);color:var(--green);}
+    .divider{display:flex;align-items:center;gap:10px;margin:14px 0 12px;color:var(--text3);font-size:12px;}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+    .btn-buy{width:100%;padding:14px;border-radius:14px;border:1.5px solid rgba(139,92,246,0.3);background:transparent;color:var(--purple);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;}
+    .btn-buy:hover{background:var(--purple-dim);}
+
+    /* Expired */
+    .expired-banner{background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(245,158,11,0.06));border:1px solid rgba(239,68,68,0.25);border-radius:24px;padding:24px 20px;text-align:center;}
+    .exp-icon{font-size:48px;margin-bottom:12px;}
+    .exp-title{font-size:18px;font-weight:900;color:var(--red);margin-bottom:6px;}
+    .exp-sub{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6;}
+
+    /* Vitamins */
+    .vit-rec{background:var(--card2);border-radius:16px;padding:14px 16px;margin-bottom:10px;border-right:3px solid var(--purple);}
+    .vr-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+    .vr-name{font-size:15px;font-weight:800;}
+    .vr-dose{display:inline-block;font-size:11px;color:var(--purple);font-weight:700;background:var(--purple-dim);padding:3px 10px;border-radius:20px;margin-bottom:5px;}
+    .vr-note{font-size:12px;color:var(--text2);line-height:1.5;}
+    .progress-bar-bg{height:7px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:4px;}
+    .progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--blue));transition:width 0.8s ease;}
+    .progress-label{font-size:12px;color:var(--text2);margin-top:6px;text-align:center;}
+    .vit-item{background:var(--card2);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+    .vi-icon-wrap{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+    .vi-info{flex:1;}
+    .vi-name{font-size:14px;font-weight:700;}
+    .vi-meta{font-size:12px;color:var(--text2);margin-top:3px;}
+    .vi-check{width:36px;height:36px;border-radius:11px;border:2px solid var(--border);background:transparent;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .vi-check.taken{background:var(--green-dim);border-color:var(--green);}
+
+    /* Workouts */
+    .wo-summary{background:linear-gradient(135deg,rgba(14,165,233,0.08),rgba(139,92,246,0.06));border:1px solid rgba(14,165,233,0.15);border-radius:20px;padding:18px;margin-bottom:16px;}
+    .ws-row{display:flex;justify-content:space-around;}
+    .ws-item{text-align:center;}
+    .ws-val{font-size:22px;font-weight:900;}
+    .ws-lbl{font-size:11px;color:var(--text2);margin-top:4px;}
+    .wo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .wo-day{font-size:20px;font-weight:900;}
+    .wo-badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;}
+    .exercise-card{background:var(--card2);border:1px solid var(--border);border-radius:18px;padding:15px;margin-bottom:11px;transition:all 0.2s;}
+    .exercise-card.done{border-color:var(--green);background:rgba(16,185,129,0.04);}
+    .ec-top{display:flex;align-items:center;gap:12px;margin-bottom:11px;}
+    .ec-num{width:32px;height:32px;border-radius:9px;background:var(--blue-dim);color:var(--blue);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .ec-name{font-size:15px;font-weight:800;flex:1;line-height:1.3;}
+    .ec-muscles{font-size:11px;color:var(--text2);font-weight:400;}
+    .ec-check{width:32px;height:32px;border-radius:9px;border:2px solid var(--border);background:transparent;cursor:pointer;font-size:15px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+    .ec-check.done{background:var(--green-dim);border-color:var(--green);}
+    .ec-sets{display:flex;gap:7px;flex-wrap:wrap;}
+    .set-badge{padding:5px 12px;border-radius:9px;font-size:11px;font-weight:700;background:rgba(14,165,233,0.06);color:var(--text2);border:1px solid var(--border);}
+    .rest-card{background:var(--card2);border:1px solid var(--border);border-radius:22px;padding:40px 20px;text-align:center;}
+    .rest-icon{font-size:64px;margin-bottom:14px;}
+    .rest-title{font-size:22px;font-weight:800;margin-bottom:8px;}
+    .rest-sub{color:var(--text2);font-size:14px;line-height:1.7;}
+    .btn-log{width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green),#059669);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:16px;}
+
+    /* Buy modal */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);}
+    .overlay.open{display:flex;}
+    .modal-sheet{background:var(--card);border-radius:28px 28px 0 0;border:1px solid var(--border);border-bottom:none;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;animation:slideUp 0.32s cubic-bezier(0.34,1.4,0.64,1);}
+    .modal-inner{padding:12px 20px 40px;}
+    .modal-handle{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px;}
+    .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+    .plan-card{border-radius:18px;padding:18px 14px;text-align:center;cursor:pointer;border:2px solid var(--border);background:var(--card2);transition:all 0.2s;position:relative;}
+    .plan-card.featured{border-color:var(--purple);background:var(--purple-dim);}
+    .plan-card.sel-plan{border-color:var(--blue);background:var(--blue-dim);}
+    .plan-rec{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:10px;font-weight:800;padding:2px 10px;border-radius:20px;white-space:nowrap;}
+    .plan-icon{font-size:28px;margin-bottom:8px;display:block;}
+    .plan-name{font-size:13px;font-weight:800;margin-bottom:6px;}
+    .plan-price{font-size:22px;font-weight:900;}
+    .plan-lbl{font-size:10px;color:var(--text2);}
+    .plan-period{font-size:11px;color:var(--text2);margin-top:4px;}
+    .plan-save{font-size:11px;color:var(--green);font-weight:700;margin-top:3px;}
+    .contact-box{background:var(--card2);border-radius:16px;padding:16px;text-align:center;}
+    .contact-title{font-size:14px;font-weight:800;margin-bottom:6px;}
+    .contact-sub{font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6;}
+    .contact-btns{display:flex;gap:10px;}
+    .btn-contact{flex:1;padding:13px;border-radius:12px;border:none;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .btn-tg{background:rgba(0,168,232,0.12);color:#00A8E8;}
+    .btn-wa{background:rgba(37,211,102,0.1);color:#25D366;}
+
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(14,17,23,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 20px 12px;}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--text3);transition:color 0.2s;padding:4px 0;}
+    .nav-item.active{color:var(--purple);}
+    .nav-item.active .nav-icon{filter:drop-shadow(0 0 6px rgba(139,92,246,0.6));}
+    .nav-icon{font-size:22px;}
+    .nav-label{font-size:11px;font-weight:600;}
+    .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 22px;font-size:14px;font-weight:700;z-index:400;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+    .toast.show{opacity:1;}
+    .toast.green{border-color:var(--green);color:var(--green);}
+    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+    @keyframes spin{to{transform:rotate(360deg);}}
+  </style>
+</head>
+<body>
+  <div class="loading-screen" id="loading-screen"><div class="spinner"></div></div>
+  <div class="glow g1"></div>
+  <div class="toast" id="toast"></div>
+
+  <div class="topbar">
+    <div class="topbar-title">
+      <h2>RIKFIT 💊</h2>
+      <div class="pro-badge pb-free" id="pro-badge">FREE</div>
+    </div>
+    <div class="top-tabs">
+      <button class="tt active" id="tt-vi" onclick="switchTab('vitamins')"><span class="ti">💊</span>ڤیتامین</button>
+      <button class="tt"        id="tt-wo" onclick="switchTab('workouts')"><span class="ti">🏋️</span>وەرزش</button>
+    </div>
+  </div>
+
+  <!-- VITAMINS -->
+  <div class="page active" id="page-vitamins">
+    <!-- Locked -->
+    <div id="vit-lock">
+      <div class="lock-banner">
+        <span class="lb-glow">🔐</span>
+        <div class="lb-title">ئەم تایبەتمەندییە PRO یە</div>
+        <div class="lb-sub">کۆدی لایسینسی پێویستە بۆ بەکارهێنانی بەشی ڤیتامین</div>
+        <div class="lb-features">
+          <div class="lbf-item">💊 پێشنیاری ڤیتامین بەپێی جەستەت</div>
+          <div class="lbf-item">✅ بەدواداچوونی ڤیتامینی ڕۆژانە</div>
+          <div class="lbf-item">📊 ئەنالیزی تەندروستی پێشکەوتوو</div>
+        </div>
+        <div class="code-row">
+          <input type="text" class="lic-inp" id="lock-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
+          <button class="btn-act" id="lock-btn" onclick="activateLicense('lock')">چالاک بکە</button>
+        </div>
+        <div class="lic-msg lic-err" id="lock-err">❌ کۆدەکە هەڵەیە یان بەسەرچووە</div>
+        <div class="lic-msg lic-ok"  id="lock-ok">🎉 PRO چالاک کرا!</div>
+        <div class="divider">یان</div>
+        <button class="btn-buy" onclick="openBuyModal()">🛒 کۆد نییەتە؟ ئێرە بکڕە</button>
+      </div>
+    </div>
+    <!-- Expired -->
+    <div id="vit-expired" style="display:none">
+      <div class="expired-banner">
+        <div class="exp-icon">⏰</div>
+        <div class="exp-title">کۆدی لایسینست بەسەرچووە</div>
+        <div class="exp-sub">بۆ دەستگەیشتن بە بەشی ڤیتامین، کۆدی نوێت داخڵ بکە</div>
+        <div class="code-row">
+          <input type="text" class="lic-inp" id="exp-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
+          <button class="btn-act" id="exp-btn" onclick="activateLicense('exp')">چالاک بکە</button>
+        </div>
+        <div class="lic-msg lic-err" id="exp-err">❌ کۆدەکە هەڵەیە یان بەسەرچووە</div>
+        <div class="lic-msg lic-ok"  id="exp-ok">🎉 دووبارە چالاک کرا!</div>
+        <div class="divider">یان</div>
+        <button class="btn-buy" onclick="openBuyModal()">🛒 کۆدی نوێ بکڕە</button>
+      </div>
+    </div>
+    <!-- Content -->
+    <div id="vit-content" style="display:none">
+      <div class="sec-title">📋 پێشنیاری بۆ تۆ</div>
+      <div id="vit-recs"></div>
+      <div class="sec-title">✅ ئیمڕۆ وەریانت گرت؟</div>
+      <div style="margin-bottom:12px">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vit-progress" style="width:0%"></div></div>
+        <div class="progress-label" id="vit-progress-label"></div>
+      </div>
+      <div id="vit-tracker"></div>
+    </div>
+  </div>
+
+  <!-- WORKOUTS -->
+  <div class="page" id="page-workouts">
+    <div id="workout-content"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="home.html"      class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">ماڵ</span></a>
+    <a href="nutrition.html" class="nav-item"><span class="nav-icon">🍽️</span><span class="nav-label">خۆراک</span></a>
+    <a href="vitamins.html"  class="nav-item active"><span class="nav-icon">💊</span><span class="nav-label">ڤیتامین</span></a>
+  </nav>
+
+  <!-- BUY MODAL -->
+  <div class="overlay" id="modal-buy">
+    <div class="modal-sheet"><div class="modal-inner">
+      <div class="modal-handle"></div>
+      <div style="font-size:17px;font-weight:800;margin-bottom:6px">پلانی RikFit PRO 🚀</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:18px">پلانی خۆت هەڵبژێرە پاشان پێوەندی بکە</div>
+      <div class="plan-grid">
+        <div class="plan-card" id="pl-w" onclick="selPlan('weekly')">
+          <span class="plan-icon">⚡</span><div class="plan-name">هەفتانە</div>
+          <div class="plan-price">٦٠٠٠</div><div class="plan-lbl">دینار</div><div class="plan-period">٧ ڕۆژ</div>
+        </div>
+        <div class="plan-card featured sel-plan" id="pl-m" onclick="selPlan('monthly')">
+          <div class="plan-rec">پێشنیار ✓</div>
+          <span class="plan-icon">🌟</span><div class="plan-name">مانگانە</div>
+          <div class="plan-price">٢٠٠٠٠</div><div class="plan-lbl">دینار</div>
+          <div class="plan-period">٣٠ ڕۆژ</div><div class="plan-save">٤٠٠٠ دینار خەزن!</div>
+        </div>
+      </div>
+      <div class="contact-box">
+        <div class="contact-title">📩 پێوەندی بکە بۆ کڕین</div>
+        <div class="contact-sub">کۆدەکەت لە کەمتر لە ٥ خولەک دەگاتێت</div>
+        <div class="contact-btns">
+          <button class="btn-contact btn-tg" onclick="openTg()">✈️ تێلیگرام</button>
+          <button class="btn-contact btn-wa" onclick="openWa()">💬 واتساپ</button>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp }               from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const app=initializeApp({apiKey:"AIzaSyBhYiFcQeB2r6CWDiFvqV0LUPNVoow1sjM",authDomain:"appmass-f26bd.firebaseapp.com",projectId:"appmass-f26bd",storageBucket:"appmass-f26bd.firebasestorage.app",messagingSenderId:"735578268323",appId:"1:735578268323:web:4f5e27ce1307db429bd516"});
+    const auth=getAuth(app), db=getFirestore(app);
+
+    const WP={0:{type:'rest'},1:{type:'push',name:'Push Day',badge:'🔵 Push',color:'var(--blue)',cal:420,exercises:[{name:'Bench Press',muscles:'سینە',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Overhead Press',muscles:'مەڵبەند',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Dumbbell Flyes',muscles:'سینەی ئاڵۆز',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Tricep Pushdown',muscles:'تراسپس',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Lateral Raises',muscles:'مەڵبەندی ئاڵۆز',sets:[{r:'15'},{r:'15'},{r:'12'}]}]},2:{type:'pull',name:'Pull Day',badge:'🔴 Pull',color:'var(--red)',cal:390,exercises:[{name:'Deadlift',muscles:'پشت',sets:[{r:'8'},{r:'6'},{r:'5'}]},{name:'Pull-ups',muscles:'لاتیسیموس',sets:[{r:'10'},{r:'8'},{r:'8'}]},{name:'Barbell Row',muscles:'ناوەندی پشت',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Bicep Curl',muscles:'باسپس',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Face Pull',muscles:'پشتی مەڵبەند',sets:[{r:'15'},{r:'15'},{r:'15'}]}]},3:{type:'legs',name:'Leg Day',badge:'🟢 Legs',color:'var(--green)',cal:480,exercises:[{name:'Squat',muscles:'کوات + گلووت',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Romanian Deadlift',muscles:'هامسترینگ',sets:[{r:'12'},{r:'10'},{r:'10'}]},{name:'Leg Press',muscles:'کوات',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Leg Curl',muscles:'هامسترینگ',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Calf Raise',muscles:'گژوان',sets:[{r:'20'},{r:'20'},{r:'20'}]}]},4:{type:'push2',name:'Push Day',badge:'🔵 Push',color:'var(--blue)',cal:400,exercises:[{name:'Incline Press',muscles:'سینەی سەرەوە',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Arnold Press',muscles:'مەڵبەند',sets:[{r:'12'},{r:'10'},{r:'10'}]},{name:'Cable Flyes',muscles:'سینە',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Skull Crushers',muscles:'تراسپس',sets:[{r:'12'},{r:'10'},{r:'10'}]}]},5:{type:'pull2',name:'Pull Day',badge:'🔴 Pull',color:'var(--red)',cal:370,exercises:[{name:'Weighted Pull-ups',muscles:'لاتیسیموس',sets:[{r:'8'},{r:'6'},{r:'6'}]},{name:'Seated Cable Row',muscles:'پشت',sets:[{r:'12'},{r:'10'},{r:'10'}]},{name:'Hammer Curl',muscles:'باسپس',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Reverse Fly',muscles:'پشتی مەڵبەند',sets:[{r:'15'},{r:'15'},{r:'12'}]}]},6:{type:'full',name:'Full Body',badge:'🟡 Full',color:'var(--orange)',cal:520,exercises:[{name:'Clean & Press',muscles:'تەواوی جەستە',sets:[{r:'10'},{r:'8'},{r:'8'}]},{name:'Farmer Carry',muscles:'ناوەند',sets:[{r:'40m'},{r:'40m'},{r:'40m'}]},{name:'Burpees',muscles:'کاردیۆ',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Plank',muscles:'ناوەند',sets:[{r:'60s'},{r:'60s'},{r:'45s'}]},{name:'Mountain Climbers',muscles:'کاردیۆ',sets:[{r:'30s'},{r:'30s'},{r:'30s'}]}]}};
+    const DAILY_VITAMINS=[{id:'d3',name:'ڤیتامین D3',icon:'☀️',color:'#F59E0B',dose:'1000 IU',time:'بەیانی'},{id:'omega',name:'ئۆمێگا-3',icon:'🐟',color:'#0EA5E9',dose:'1000mg',time:'لەگەڵ خواردن'},{id:'mag',name:'ماگنێزیوم',icon:'💎',color:'#8B5CF6',dose:'300mg',time:'شەو'},{id:'zinc',name:'زینک',icon:'🔩',color:'#F59E0B',dose:'10mg',time:'بەیانی'},{id:'vitc',name:'ڤیتامین C',icon:'🍊',color:'#FB923C',dose:'500mg',time:'نیوەڕۆ'}];
+    function buildRecs(p){const r=[],{gender:g,age:a,goal:gl}=p||{};r.push({icon:'☀️',name:'ڤیتامین D3',dose:`${a>50?'2000':'1000'} IU ڕۆژانە`,note:'زیاتر لە %٨٠ کەسان کەمیان هەیە. بۆ ئێسک، ئیمیون و وزە'});r.push({icon:'🐟',name:'ئۆمێگا-3',dose:'1000-2000mg ڕۆژانە',note:'کەمکردنەوەی ئەلتەهاب، باشکردنی دڵ و مێشک'});r.push({icon:'💎',name:'ماگنێزیوم',dose:'300-400mg شەوانە',note:'خەوی باشتر، کەمکردنەوەی ستریس'});if(gl==='gain'){r.push({icon:'⚡',name:'کرێاتین',dose:'5g ڕۆژانە',note:'زیادکردنی بەهێزی وەرزش و گەشەی ماس'});r.push({icon:'🔩',name:'زینک',dose:`${g==='male'?'11':'8'}mg ڕۆژانە`,note:'گرنگە بۆ هۆرمۆن و پڕۆتین'});}if(gl==='lose'){r.push({icon:'🔥',name:'L-کارنیتین',dose:'1000-2000mg پێش وەرزش',note:'گواستنەوەی چەوی بۆ وزە'});r.push({icon:'🍊',name:'ڤیتامین C',dose:'500-1000mg ڕۆژانە',note:'پاراستنی ماس کاتی دایت'});}if(g==='female'){r.push({icon:'🌹',name:'ئاسن',dose:'18mg ڕۆژانە',note:'گرنگە بۆ خوێنگەری بانبەند'});r.push({icon:'💚',name:'فۆلیک ئاسید',dose:'400mcg ڕۆژانە',note:'تەندروستی گشتی بانبەند'});}if(a>40){r.push({icon:'🦴',name:'کلسیوم',dose:'1000mg ڕۆژانە',note:'پاراستنی چڕی ئێسک'});r.push({icon:'🔵',name:'B12',dose:'500mcg ڕۆژانە',note:'وزە و دزگای دەمار'});}return r;}
+
+    let CU=null, doneEx=new Set(), selPlanVal='monthly';
+
+    onAuthStateChanged(auth, async user=>{
+      if(!user){window.location.href='index.html';return;}
+      CU=user;
+      try{const snap=await getDoc(doc(db,'users',user.uid));if(snap.exists()&&snap.data().profile)localStorage.setItem('rkf_profile',JSON.stringify(snap.data().profile));}catch(e){}
+      document.getElementById('loading-screen').style.display='none';
+      // Check license from Firestore (source of truth)
+      await checkLicenseFromFirestore();
+      updBadge();
+      const tab=new URLSearchParams(location.search).get('tab');
+      if(tab==='workouts')switchTab('workouts'); else switchTab('vitamins');
+    });
+
+    // ═══════════════════════════════════════════════════
+    // LICENSE — reads from Firestore licenses collection
+    // ═══════════════════════════════════════════════════
+    async function checkLicenseFromFirestore(){
+      const savedCode = localStorage.getItem('rkf_license_code');
+      if(!savedCode) return;
+      try{
+        const snap = await getDoc(doc(db,'licenses',savedCode));
+        if(!snap.exists() || !snap.data().active){
+          // Code deleted or disabled by admin
+          clearLicense(); return;
+        }
+        const lic = snap.data();
+        const now = Date.now();
+        if(lic.expiresAt && parseInt(lic.expiresAt) < now){
+          // Expired
+          localStorage.setItem('rkf_pro','expired');
+        } else {
+          localStorage.setItem('rkf_pro','1');
+          if(lic.expiresAt) localStorage.setItem('rkf_pro_expires', lic.expiresAt);
+        }
+      }catch(e){ /* Use cached */ }
+    }
+
+    function clearLicense(){
+      localStorage.removeItem('rkf_pro');
+      localStorage.removeItem('rkf_license_code');
+      localStorage.removeItem('rkf_pro_expires');
+    }
+    function isPro(){ return localStorage.getItem('rkf_pro')==='1'; }
+    function isExpired(){ return localStorage.getItem('rkf_pro')==='expired'; }
+
+    function updBadge(){
+      const b=document.getElementById('pro-badge');
+      b.textContent=isPro()?'PRO ✓':'FREE';
+      b.className='pro-badge '+(isPro()?'pb-pro':'pb-free');
+    }
+
+    // ═══════════════════════════════════════════════════
+    // ACTIVATE LICENSE — checks Firestore
+    // ═══════════════════════════════════════════════════
+    window.activateLicense = async (from) => {
+      const inpId = from==='lock' ? 'lock-inp' : 'exp-inp';
+      const errId = from==='lock' ? 'lock-err'  : 'exp-err';
+      const okId  = from==='lock' ? 'lock-ok'   : 'exp-ok';
+      const btnId = from==='lock' ? 'lock-btn'  : 'exp-btn';
+      const code  = document.getElementById(inpId).value.trim().toUpperCase();
+      const errEl = document.getElementById(errId);
+      const okEl  = document.getElementById(okId);
+      const btn   = document.getElementById(btnId);
+      errEl.style.display='none'; okEl.style.display='none';
+      if(code.length<14){errEl.style.display='block';return;}
+      btn.textContent='...'; btn.disabled=true;
+
+      try{
+        const snap = await getDoc(doc(db,'licenses',code));
+        if(!snap.exists()){errEl.style.display='block';btn.textContent='چالاک بکە';btn.disabled=false;return;}
+        const lic = snap.data();
+        if(!lic.active){errEl.textContent='❌ ئەم کۆدە ڕاگیراوە';errEl.style.display='block';btn.textContent='چالاک بکە';btn.disabled=false;return;}
+        // If already used by someone else
+        if(lic.usedBy && lic.usedBy!==CU.email){errEl.textContent='❌ ئەم کۆدە پێشتر بەکارهاتووە';errEl.style.display='block';btn.textContent='چالاک بکە';btn.disabled=false;return;}
+        const now = Date.now();
+        // Set expiry based on durationMs from when FIRST activated
+        let expiresAt = lic.expiresAt ? parseInt(lic.expiresAt) : now + (lic.durationMs || 30*24*60*60*1000);
+        if(expiresAt < now){errEl.textContent='❌ ئەم کۆدە بەسەرچووە';errEl.style.display='block';btn.textContent='چالاک بکە';btn.disabled=false;return;}
+
+        // Mark code as used in Firestore
+        await updateDoc(doc(db,'licenses',code),{usedBy:CU.email,expiresAt:String(expiresAt),activatedAt:new Date().toISOString()});
+
+        // Save locally
+        localStorage.setItem('rkf_pro','1');
+        localStorage.setItem('rkf_license_code',code);
+        localStorage.setItem('rkf_pro_expires',String(expiresAt));
+        // Also save to user doc
+        try{await updateDoc(doc(db,'users',CU.uid),{pro:true,licenseCode:code,proExpires:String(expiresAt)});}catch(e){}
+
+        okEl.style.display='block';
+        updBadge();
+        toast('🎉 بەخێربێیت PRO!','green');
+        setTimeout(()=>renderVit(),1000);
+      }catch(e){
+        errEl.textContent='❌ هەڵەیەک ڕوویدا';errEl.style.display='block';
+      }
+      btn.textContent='چالاک بکە'; btn.disabled=false;
+    };
+
+    window.fmtLic=inp=>{let v=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'');const parts=[];if(v.startsWith('RIKFIT')){parts.push('RIKFIT');v=v.slice(6);}while(v.length>0){parts.push(v.slice(0,4));v=v.slice(4);}inp.value=parts.join('-').slice(0,22);};
+
+    window.switchTab=tab=>{
+      ['vitamins','workouts'].forEach(t=>{document.getElementById('page-'+t).classList.toggle('active',t===tab);document.getElementById('tt-'+t.slice(0,2)).classList.toggle('active',t===tab);});
+      if(tab==='vitamins')renderVit();
+      if(tab==='workouts')renderWo();
+    };
+
+    function renderVit(){
+      const pro=isPro(),exp=isExpired();
+      document.getElementById('vit-lock').style.display    = (!pro&&!exp)?'block':'none';
+      document.getElementById('vit-expired').style.display = exp?'block':'none';
+      document.getElementById('vit-content').style.display = pro?'block':'none';
+      if(!pro)return;
+      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
+      const today=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      const taken=today.vitamins_taken||[];
+      document.getElementById('vit-recs').innerHTML=buildRecs(prof).map(r=>`<div class="vit-rec"><div class="vr-top"><span style="font-size:20px">${r.icon}</span><span class="vr-name">${r.name}</span></div><span class="vr-dose">💊 ${r.dose}</span><div class="vr-note">${r.note}</div></div>`).join('');
+      const total=DAILY_VITAMINS.length,done=taken.length,pct=Math.round(done/total*100);
+      document.getElementById('vit-progress').style.width=pct+'%';
+      document.getElementById('vit-progress-label').textContent=`${done} / ${total} وەریانگرت — ${pct}%`;
+      document.getElementById('vit-tracker').innerHTML=DAILY_VITAMINS.map(v=>`<div class="vit-item"><div class="vi-icon-wrap" style="background:${v.color}20">${v.icon}</div><div class="vi-info"><div class="vi-name">${v.name}</div><div class="vi-meta">${v.dose} • ⏰ ${v.time}</div></div><button class="vi-check${taken.includes(v.id)?' taken':''}" onclick="toggleVit('${v.id}')">${taken.includes(v.id)?'✓':''}</button></div>`).join('');
+    }
+    window.toggleVit=id=>{const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');td.vitamins_taken=td.vitamins_taken||[];const i=td.vitamins_taken.indexOf(id);i>=0?td.vitamins_taken.splice(i,1):td.vitamins_taken.push(id);localStorage.setItem('rkf_today',JSON.stringify(td));renderVit();toast(i>=0?'↩️ لابرا':'✅ تۆمارکرا!',i>=0?'':'green');};
+
+    function renderWo(){const di=new Date().getDay(),plan=WP[di];const days=['یەکشەممە','دووشەممە','سێشەممە','چوارشەممە','پێنجشەممە','هەینی','شەممە'];const cont=document.getElementById('workout-content');const today=JSON.parse(localStorage.getItem('rkf_today')||'{}');doneEx=new Set(today.done_exercises||[]);if(plan.type==='rest'){cont.innerHTML=`<div style="padding:20px"><div class="rest-card"><div class="rest-icon">😴</div><div class="rest-title">ڕۆژی ئەستراحەت</div><div class="rest-sub">ئیمڕۆ ${days[di]}ە، جەستەت پێویستی بە پشووی هەیە 💪</div></div></div>`;return;}const total=plan.exercises.length,done=doneEx.size;cont.innerHTML=`<div style="padding:20px"><div class="wo-summary"><div class="ws-row"><div class="ws-item"><div class="ws-val">${total}</div><div class="ws-lbl">گشتی</div></div><div class="ws-item"><div class="ws-val" style="color:var(--green)" id="done-cnt">${done}</div><div class="ws-lbl">ئەنجامدراو</div></div><div class="ws-item"><div class="ws-val" style="color:var(--orange)">${plan.cal}</div><div class="ws-lbl">کالۆری</div></div><div class="ws-item"><div class="ws-val" id="pct-val">${Math.round(done/total*100)}%</div><div class="ws-lbl">پیشرفت</div></div></div></div><div class="wo-header"><div class="wo-day" style="color:${plan.color}">${plan.name}</div><div class="wo-badge" style="background:${plan.color}1a;color:${plan.color}">${plan.badge}</div></div>${plan.exercises.map((ex,i)=>`<div class="exercise-card${doneEx.has(i)?' done':''}" id="exc-${i}"><div class="ec-top"><div class="ec-num">${i+1}</div><div class="ec-name">${ex.name}<br><span class="ec-muscles">${ex.muscles}</span></div><button class="ec-check${doneEx.has(i)?' done':''}" onclick="toggleEx(${i},${total})">${doneEx.has(i)?'✓':''}</button></div><div class="ec-sets">${ex.sets.map((s,si)=>`<div class="set-badge">ست ${si+1}: ${s.r}</div>`).join('')}</div></div>`).join('')}<button class="btn-log" onclick="logWo(${di})">💾 تۆمارکردنی وەرزش</button></div>`;}
+    window.toggleEx=(idx,total)=>{doneEx.has(idx)?doneEx.delete(idx):doneEx.add(idx);const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');td.done_exercises=[...doneEx];localStorage.setItem('rkf_today',JSON.stringify(td));const card=document.getElementById('exc-'+idx),btn=card.querySelector('.ec-check');card.classList.toggle('done',doneEx.has(idx));btn.classList.toggle('done',doneEx.has(idx));btn.textContent=doneEx.has(idx)?'✓':'';document.getElementById('done-cnt').textContent=doneEx.size;document.getElementById('pct-val').textContent=Math.round(doneEx.size/total*100)+'%';};
+    window.logWo=di=>{const plan=WP[di],td=JSON.parse(localStorage.getItem('rkf_today')||'{}');td.workouts=(td.workouts||[]).filter(w=>w.type!==plan.type);td.workouts.push({type:plan.type,name:plan.name,done:doneEx.size,total:plan.exercises.length,cal:Math.round(plan.cal*(doneEx.size/plan.exercises.length)),loggedAt:new Date().toISOString()});localStorage.setItem('rkf_today',JSON.stringify(td));toast('✅ وەرزش تۆمارکرا!','green');};
+
+    window.openBuyModal=()=>document.getElementById('modal-buy').classList.add('open');
+    window.selPlan=p=>{selPlanVal=p;document.getElementById('pl-w').classList.toggle('sel-plan',p==='weekly');document.getElementById('pl-m').classList.toggle('sel-plan',p==='monthly');};
+    window.openTg=()=>window.open(`https://t.me/YourUsername?text=${encodeURIComponent(`سڵاو، دەمەوێت پلانی ${selPlanVal==='monthly'?'مانگانە':'هەفتانە'} ی RikFit PRO بکڕم`)}`,'_blank');
+    window.openWa=()=>window.open(`https://wa.me/9647XXXXXXXXX?text=${encodeURIComponent(`سڵاو، دەمەوێت پلانی ${selPlanVal==='monthly'?'مانگانە':'هەفتانە'} ی RikFit PRO بکڕم`)}`,'_blank');
+    document.getElementById('modal-buy').addEventListener('click',e=>{if(e.target===document.getElementById('modal-buy'))document.getElementById('modal-buy').classList.remove('open');});
+
+    function toast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');setTimeout(()=>t.className='toast',2500);}
+  </script>
+</body>
+</html>
