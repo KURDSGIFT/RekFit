@@ -55,21 +55,17 @@
     .exp-sub{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6;}
 
     /* VITAMINS */
-    .vit-rec{background:var(--card2);border-radius:16px;padding:14px 16px;margin-bottom:10px;border-right:3px solid var(--purple);}
-    .vr-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-    .vr-name{font-size:15px;font-weight:800;}
-    .vr-dose{display:inline-block;font-size:11px;color:var(--purple);font-weight:700;background:var(--purple-dim);padding:3px 10px;border-radius:20px;margin-bottom:5px;}
-    .vr-note{font-size:12px;color:var(--text2);line-height:1.5;}
+    .progress-summary{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(14,165,233,0.06));border:1px solid rgba(139,92,246,0.15);border-radius:20px;padding:18px;margin-bottom:16px;}
+    .ps-title{font-size:14px;font-weight:800;margin-bottom:12px;color:var(--purple);}
+    .ps-subtitle{font-size:12px;color:var(--text2);margin-bottom:14px;}
+    .nutrient-card{background:var(--card2);border-radius:16px;padding:14px 16px;margin-bottom:10px;border-right:3px solid var(--purple);}
+    .nc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .nc-name{font-size:15px;font-weight:800;}
+    .nc-values{font-size:12px;color:var(--text2);}
+    .nc-current{color:var(--purple);font-weight:700;}
     .progress-bar-bg{height:7px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:4px;}
     .progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--blue));transition:width 0.8s ease;}
-    .progress-label{font-size:12px;color:var(--text2);margin-top:6px;text-align:center;}
-    .vit-item{background:var(--card2);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
-    .vi-icon-wrap{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-    .vi-info{flex:1;}
-    .vi-name{font-size:14px;font-weight:700;}
-    .vi-meta{font-size:12px;color:var(--text2);margin-top:3px;}
-    .vi-check{width:36px;height:36px;border-radius:11px;border:2px solid var(--border);background:transparent;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-    .vi-check.taken{background:var(--green-dim);border-color:var(--green);}
+    .nc-note{font-size:11px;color:var(--text3);margin-top:6px;}
 
     /* WORKOUTS */
     .wo-summary{background:linear-gradient(135deg,rgba(14,165,233,0.08),rgba(139,92,246,0.06));border:1px solid rgba(14,165,233,0.15);border-radius:20px;padding:18px;margin-bottom:16px;}
@@ -79,47 +75,22 @@
     .ws-lbl{font-size:11px;color:var(--text2);margin-top:4px;}
     .wo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
     .wo-day{font-size:20px;font-weight:900;}
-    .wo-badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;}
-    .exercise-card{background:var(--card2);border:1px solid var(--border);border-radius:18px;padding:15px;margin-bottom:11px;transition:all 0.2s;}
-    .exercise-card.done{border-color:var(--green);background:rgba(16,185,129,0.04);}
-    .ec-top{display:flex;align-items:center;gap:12px;margin-bottom:11px;}
-    .ec-num{width:32px;height:32px;border-radius:9px;background:var(--blue-dim);color:var(--blue);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .ec-name{font-size:15px;font-weight:800;flex:1;line-height:1.3;}
-    .ec-muscles{font-size:11px;color:var(--text2);font-weight:400;}
-    .ec-check{width:32px;height:32px;border-radius:9px;border:2px solid var(--border);background:transparent;cursor:pointer;font-size:15px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
-    .ec-check.done{background:var(--green-dim);border-color:var(--green);}
-    .ec-sets{display:flex;gap:7px;flex-wrap:wrap;}
-    .set-badge{padding:5px 12px;border-radius:9px;font-size:11px;font-weight:700;background:rgba(14,165,233,0.06);color:var(--text2);border:1px solid var(--border);}
-    .rest-card{background:var(--card2);border:1px solid var(--border);border-radius:22px;padding:40px 20px;text-align:center;}
+    .wo-badge{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;}
+    .rest-card{text-align:center;padding:40px 20px;background:var(--card2);border-radius:20px;}
     .rest-icon{font-size:64px;margin-bottom:14px;}
-    .rest-title{font-size:22px;font-weight:800;margin-bottom:8px;}
-    .rest-sub{color:var(--text2);font-size:14px;line-height:1.7;}
-    .btn-log{width:100%;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--green),#059669);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:16px;}
-
-    /* BUY MODAL */
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);}
-    .overlay.open{display:flex;}
-    .modal-sheet{background:var(--card);border-radius:28px 28px 0 0;border:1px solid var(--border);border-bottom:none;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;animation:slideUp 0.32s cubic-bezier(0.34,1.4,0.64,1);}
-    .modal-inner{padding:12px 20px 40px;}
-    .modal-handle{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px;}
-    .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
-    .plan-card{border-radius:18px;padding:18px 14px;text-align:center;cursor:pointer;border:2px solid var(--border);background:var(--card2);transition:all 0.2s;position:relative;}
-    .plan-card.featured{border-color:var(--purple);background:var(--purple-dim);}
-    .plan-card.sel-plan{border-color:var(--blue);background:var(--blue-dim);}
-    .plan-rec{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:10px;font-weight:800;padding:2px 10px;border-radius:20px;white-space:nowrap;}
-    .plan-icon{font-size:28px;margin-bottom:8px;display:block;}
-    .plan-name{font-size:13px;font-weight:800;margin-bottom:6px;}
-    .plan-price{font-size:22px;font-weight:900;}
-    .plan-lbl{font-size:10px;color:var(--text2);}
-    .plan-period{font-size:11px;color:var(--text2);margin-top:4px;}
-    .plan-save{font-size:11px;color:var(--green);font-weight:700;margin-top:3px;}
-    .contact-box{background:var(--card2);border-radius:16px;padding:16px;text-align:center;}
-    .contact-title{font-size:14px;font-weight:800;margin-bottom:6px;}
-    .contact-sub{font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6;}
-    .contact-btns{display:flex;gap:10px;}
-    .btn-contact{flex:1;padding:13px;border-radius:12px;border:none;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
-    .btn-tg{background:rgba(0,168,232,0.12);color:#00A8E8;}
-    .btn-wa{background:rgba(37,211,102,0.1);color:#25D366;}
+    .rest-title{font-size:20px;font-weight:900;margin-bottom:8px;}
+    .rest-sub{font-size:14px;color:var(--text2);line-height:1.6;}
+    .exercise-card{background:var(--card2);border-radius:16px;padding:14px 16px;margin-bottom:10px;transition:all 0.3s;}
+    .exercise-card.done{opacity:0.6;}
+    .ec-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+    .ec-num{width:32px;height:32px;border-radius:10px;background:var(--card);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;}
+    .ec-name{flex:1;font-size:15px;font-weight:700;}
+    .ec-muscles{font-size:11px;color:var(--text2);font-weight:400;display:block;margin-top:2px;}
+    .ec-check{width:36px;height:36px;border-radius:11px;border:2px solid var(--border);background:transparent;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .ec-check.done{background:var(--green-dim);border-color:var(--green);}
+    .ec-sets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+    .set-badge{font-size:11px;padding:4px 10px;border-radius:6px;background:var(--card);border:1px solid var(--border);color:var(--text2);}
+    .btn-log{width:100%;padding:14px;border-radius:14px;border:none;background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:16px;}
 
     /* BOTTOM NAV */
     .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(14,17,23,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 20px 12px;}
@@ -128,213 +99,198 @@
     .nav-item.active .nav-icon{filter:drop-shadow(0 0 6px rgba(139,92,246,0.6));}
     .nav-icon{font-size:22px;}
     .nav-label{font-size:11px;font-weight:600;}
-    .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 22px;font-size:14px;font-weight:700;z-index:400;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
-    .toast.show{opacity:1;}
-    .toast.green{border-color:var(--green);color:var(--green);}
-    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:12px 20px;border-radius:30px;font-size:13px;font-weight:700;z-index:300;opacity:0;transition:all 0.3s;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    .toast.green{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+
+    /* BUY MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:var(--card);border:1px solid var(--border);border-radius:24px;max-width:400px;width:90%;padding:24px;}
+    .mb-title{font-size:20px;font-weight:900;margin-bottom:8px;text-align:center;}
+    .mb-sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:20px;}
+    .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+    .plan-card{padding:16px;border-radius:14px;border:2px solid var(--border);background:var(--card2);text-align:center;cursor:pointer;transition:all 0.2s;}
+    .plan-card.sel-plan{border-color:var(--purple);background:var(--purple-dim);}
+    .pc-label{font-size:12px;color:var(--text2);margin-bottom:4px;}
+    .pc-price{font-size:24px;font-weight:900;margin-bottom:2px;}
+    .pc-per{font-size:11px;color:var(--text3);}
+    .contact-btns{display:flex;gap:10px;}
+    .cb{flex:1;padding:14px;border-radius:12px;border:none;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .cb-tg{background:#0088cc;color:#fff;}
+    .cb-wa{background:#25D366;color:#fff;}
+
     @keyframes spin{to{transform:rotate(360deg);}}
   </style>
 </head>
 <body>
   <div class="loading-screen" id="loading-screen"><div class="spinner"></div></div>
   <div class="glow g1"></div>
-  <div class="toast" id="toast"></div>
 
+  <!-- TOP BAR -->
   <div class="topbar">
     <div class="topbar-title">
-      <h2>RIKFIT 💊</h2>
+      <h2>RikFit</h2>
       <div class="pro-badge pb-free" id="pro-badge" onclick="openBuyModal()">FREE</div>
     </div>
     <div class="top-tabs">
-      <button class="tt active" id="tt-vi" onclick="switchTab('vitamins')"><span class="ti">💊</span>ڤیتامین</button>
-      <button class="tt"        id="tt-wo" onclick="switchTab('workouts')"><span class="ti">🏋️</span>وەرزش</button>
+      <button class="tt active" onclick="switchTab('vitamins')"><span class="ti">💊</span>ڤیتامین</button>
+      <button class="tt" onclick="switchTab('workouts')"><span class="ti">💪</span>وەرزش</button>
     </div>
   </div>
 
-  <!-- ═══ VITAMINS ═══ -->
+  <!-- VITAMINS PAGE -->
   <div class="page active" id="page-vitamins">
-    <!-- Locked -->
-    <div id="vit-lock">
-      <div class="lock-banner">
-        <span class="lb-glow">🔐</span>
-        <div class="lb-title">ئەم تایبەتمەندییە PRO یە</div>
-        <div class="lb-sub">کۆدی لایسینسی پێویستە بۆ بەکارهێنانی بەشی ڤیتامین</div>
-        <div class="lb-features">
-          <div class="lbf-item">💊 پێشنیاری ڤیتامین بەپێی جەستەت</div>
-          <div class="lbf-item">✅ بەدواداچوونی ڤیتامینی ڕۆژانە</div>
-          <div class="lbf-item">📊 ئەنالیزی تەندروستی پێشکەوتوو</div>
-        </div>
-        <div class="code-row">
-          <input type="text" class="lic-inp" id="vlock-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
-          <button class="btn-act" id="vlock-btn" onclick="activateLic('vlock')">چالاک</button>
-        </div>
-        <div class="lic-msg lic-err" id="vlock-err">❌ کۆدەکە هەڵەیە</div>
-        <div class="lic-msg lic-ok"  id="vlock-ok">🎉 PRO چالاک کرا!</div>
-        <div class="divider">یان</div>
-        <button class="btn-buy" onclick="openBuyModal()">🛒 کۆد نییەتە؟ ئێرە بکڕە</button>
+    <!-- LOCK BANNER -->
+    <div class="lock-banner" id="vit-lock">
+      <span class="lb-glow">🔒</span>
+      <div class="lb-title">تایبەتمەندی PRO</div>
+      <div class="lb-sub">بۆ تراک کردنی ڤیتامین و کانزا پێویستە ئەکاونتی PRO هەبێت</div>
+      <div class="lb-features">
+        <div class="lbf-item">✅ حیسابکردنی پێداویستی ڕۆژانە بەپێی تەمەن و قەبارە</div>
+        <div class="lbf-item">✅ تراک کردنی ڤیتامین لە خواردنەکان</div>
+        <div class="lbf-item">✅ پیشاندانی پرۆگرێسی ڤیتامین و کانزا</div>
+        <div class="lbf-item">✅ پلانی وەرزشی تایبەتمەند</div>
       </div>
+      <div class="code-row">
+        <input type="text" class="lic-inp" id="vit-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
+        <button class="btn-act" id="vit-btn" onclick="activateLic('vit')">چالاک</button>
+      </div>
+      <div class="lic-msg lic-err" id="vit-err"></div>
+      <div class="lic-msg lic-ok" id="vit-ok">✅ بەسەرکەوتوویی چالاککرا!</div>
+      <div class="divider">یان</div>
+      <button class="btn-buy" onclick="openBuyModal()">کڕینی PRO</button>
     </div>
-    <!-- Expired -->
-    <div id="vit-expired" style="display:none">
-      <div class="expired-banner">
-        <div class="exp-icon">⏰</div>
-        <div class="exp-title">کۆدی لایسینست بەسەرچووە</div>
-        <div class="exp-sub">کۆدی نوێت داخڵ بکە</div>
-        <div class="code-row">
-          <input type="text" class="lic-inp" id="vexp-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
-          <button class="btn-act" id="vexp-btn" onclick="activateLic('vexp')">چالاک</button>
-        </div>
-        <div class="lic-msg lic-err" id="vexp-err">❌ کۆدەکە هەڵەیە</div>
-        <div class="lic-msg lic-ok"  id="vexp-ok">🎉 دووبارە چالاک کرا!</div>
-        <div class="divider">یان</div>
-        <button class="btn-buy" onclick="openBuyModal()">🛒 کۆدی نوێ بکڕە</button>
-      </div>
+
+    <!-- EXPIRED BANNER -->
+    <div class="expired-banner" id="vit-expired" style="display:none;">
+      <div class="exp-icon">⏰</div>
+      <div class="exp-title">بەسەرچووە</div>
+      <div class="exp-sub">ماوەی ئەکاونتی PRO بەسەرچووە. بۆ درێژەپێدان دووبارە کڕینی بکە.</div>
+      <button class="btn-buy" onclick="openBuyModal()">نوێکردنەوەی PRO</button>
     </div>
-    <!-- Content -->
-    <div id="vit-content" style="display:none">
-      <div class="sec-title">📋 پێشنیاری بۆ تۆ</div>
-      <div id="vit-recs"></div>
-      <div class="sec-title">✅ ئیمڕۆ وەریانت گرت؟</div>
-      <div style="margin-bottom:12px">
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="vit-progress" style="width:0%"></div></div>
-        <div class="progress-label" id="vit-progress-label"></div>
+
+    <!-- VITAMINS CONTENT -->
+    <div id="vit-content" style="display:none;">
+      <div class="progress-summary">
+        <div class="ps-title">پێشرفتی ئەمڕۆ</div>
+        <div class="ps-subtitle">بەپێی خواردنەکانی ئەمڕۆ</div>
+        <div id="overall-progress"></div>
       </div>
-      <div id="vit-tracker"></div>
+      
+      <div class="sec-title">ڤیتامینەکان</div>
+      <div id="vitamin-list"></div>
+      
+      <div class="sec-title">کانزاکان</div>
+      <div id="mineral-list"></div>
+      
+      <div class="sec-title">هیتر</div>
+      <div id="other-list"></div>
     </div>
   </div>
 
-  <!-- ═══ WORKOUTS ═══ -->
+  <!-- WORKOUTS PAGE -->
   <div class="page" id="page-workouts">
-    <!-- Locked -->
-    <div id="wo-lock">
-      <div class="lock-banner">
-        <span class="lb-glow">🏋️</span>
-        <div class="lb-title">بەشی وەرزش PRO یە</div>
-        <div class="lb-sub">کۆدی لایسینسی پێویستە بۆ دەستگەیشتن بە پلانی وەرزش</div>
-        <div class="lb-features">
-          <div class="lbf-item">📅 پلانی وەرزشی هەفتانە</div>
-          <div class="lbf-item">✅ تۆمارکردنی وەرزشی ڕۆژانە</div>
-          <div class="lbf-item">🔥 حیسابکردنی کالۆری سووتاو</div>
-        </div>
-        <div class="code-row">
-          <input type="text" class="lic-inp" id="wlock-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
-          <button class="btn-act" id="wlock-btn" onclick="activateLic('wlock')">چالاک</button>
-        </div>
-        <div class="lic-msg lic-err" id="wlock-err">❌ کۆدەکە هەڵەیە</div>
-        <div class="lic-msg lic-ok"  id="wlock-ok">🎉 PRO چالاک کرا!</div>
-        <div class="divider">یان</div>
-        <button class="btn-buy" onclick="openBuyModal()">🛒 کۆد نییەتە؟ ئێرە بکڕە</button>
+    <!-- LOCK BANNER -->
+    <div class="lock-banner" id="wo-lock">
+      <span class="lb-glow">🔒</span>
+      <div class="lb-title">تایبەتمەندی PRO</div>
+      <div class="lb-sub">بۆ پلانی وەرزش پێویستە ئەکاونتی PRO هەبێت</div>
+      <div class="code-row">
+        <input type="text" class="lic-inp" id="wo-inp" placeholder="RIKFIT-XXXX-XXXX-XXXX" maxlength="22" oninput="fmtLic(this)">
+        <button class="btn-act" id="wo-btn" onclick="activateLic('wo')">چالاک</button>
       </div>
+      <div class="lic-msg lic-err" id="wo-err"></div>
+      <div class="lic-msg lic-ok" id="wo-ok">✅ بەسەرکەوتوویی چالاککرا!</div>
+      <div class="divider">یان</div>
+      <button class="btn-buy" onclick="openBuyModal()">کڕینی PRO</button>
     </div>
-    <!-- Content -->
-    <div id="wo-content" style="display:none">
+
+    <!-- WORKOUTS CONTENT -->
+    <div id="wo-content" style="display:none;">
       <div id="workout-content"></div>
     </div>
   </div>
 
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <a href="home.html"      class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">ماڵ</span></a>
-    <a href="nutrition.html" class="nav-item"><span class="nav-icon">🍽️</span><span class="nav-label">خۆراک</span></a>
-    <a href="vitamins.html"  class="nav-item active"><span class="nav-icon">💊</span><span class="nav-label">ڤیتامین</span></a>
+    <a href="nutrition.html" class="nav-item">
+      <span class="nav-icon">🍽️</span>
+      <span class="nav-label">خۆراک</span>
+    </a>
+    <a href="vitamins.html" class="nav-item active">
+      <span class="nav-icon">💊</span>
+      <span class="nav-label">ڤیتامین</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">پرۆفایل</span>
+    </a>
   </nav>
 
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
   <!-- BUY MODAL -->
-  <div class="overlay" id="modal-buy">
-    <div class="modal-sheet"><div class="modal-inner">
-      <div class="modal-handle"></div>
-      <div style="font-size:17px;font-weight:800;margin-bottom:6px">پلانی RikFit PRO 🚀</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:18px">پلانی خۆت هەڵبژێرە پاشان پێوەندی بکە</div>
+  <div class="modal-overlay" id="modal-buy">
+    <div class="modal-box">
+      <div class="mb-title">کڕینی RikFit PRO</div>
+      <div class="mb-sub">هەڵبژاردنی پلان</div>
       <div class="plan-grid">
         <div class="plan-card" id="pl-w" onclick="selPlan('weekly')">
-          <span class="plan-icon">⚡</span><div class="plan-name">هەفتانە</div>
-          <div class="plan-price">٦٠٠٠</div><div class="plan-lbl">دینار</div><div class="plan-period">٧ ڕۆژ</div>
+          <div class="pc-label">هەفتانە</div>
+          <div class="pc-price">$5</div>
+          <div class="pc-per">بۆ هەفتەیەک</div>
         </div>
-        <div class="plan-card featured sel-plan" id="pl-m" onclick="selPlan('monthly')">
-          <div class="plan-rec">پێشنیار ✓</div>
-          <span class="plan-icon">🌟</span><div class="plan-name">مانگانە</div>
-          <div class="plan-price">٢٠٠٠٠</div><div class="plan-lbl">دینار</div>
-          <div class="plan-period">٣٠ ڕۆژ</div><div class="plan-save">٤٠٠٠ دینار خەزن!</div>
-        </div>
-      </div>
-      <div class="contact-box">
-        <div class="contact-title">📩 پێوەندی بکە بۆ کڕین</div>
-        <div class="contact-sub">کۆدەکەت لە کەمتر لە ٥ خولەک دەگاتێت</div>
-        <div class="contact-btns">
-          <button class="btn-contact btn-tg" onclick="openTg()">✈️ تێلیگرام</button>
-          <button class="btn-contact btn-wa" onclick="openWa()">💬 واتساپ</button>
+        <div class="plan-card sel-plan" id="pl-m" onclick="selPlan('monthly')">
+          <div class="pc-label">مانگانە</div>
+          <div class="pc-price">$15</div>
+          <div class="pc-per">بۆ مانگێک</div>
         </div>
       </div>
-    </div></div>
+      <div class="mb-sub">پەیوەندی بکە بۆ کڕین:</div>
+      <div class="contact-btns">
+        <button class="cb cb-tg" onclick="openTg()">📱 Telegram</button>
+        <button class="cb cb-wa" onclick="openWa()">📱 WhatsApp</button>
+      </div>
+    </div>
   </div>
 
   <script type="module">
-    import { initializeApp }               from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import{initializeApp}from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import{getFirestore,doc,getDoc,updateDoc}from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import{getAuth,onAuthStateChanged}from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    const app=initializeApp({apiKey:"AIzaSyCpWGLPYMHLEhd6bV0w3PAQ4aLBG0W-2bY",authDomain:"rikfit-d8f42.firebaseapp.com",projectId:"rikfit-d8f42"});
+    const db=getFirestore(app),auth=getAuth(app);
+    let CU=null,doneEx=new Set(),selPlanVal='monthly';
+    onAuthStateChanged(auth,u=>{CU=u;if(u)updBadge();});
 
-    const app=initializeApp({apiKey:"AIzaSyBhYiFcQeB2r6CWDiFvqV0LUPNVoow1sjM",authDomain:"appmass-f26bd.firebaseapp.com",projectId:"appmass-f26bd",storageBucket:"appmass-f26bd.firebasestorage.app",messagingSenderId:"735578268323",appId:"1:735578268323:web:4f5e27ce1307db429bd516"});
-    const auth=getAuth(app), db=getFirestore(app);
+    // ══ WORKOUT PLAN ══
+    const WP=[
+      {type:'rest',name:'ڕۆژی ئەستراحەت',badge:'😴'},
+      {type:'push',name:'سنگ و شان و سێجەپ',badge:'💪',color:'#0EA5E9',cal:350,exercises:[{name:'Bench Press',muscles:'سنگ',sets:[{r:'12 rep'},{r:'10 rep'},{r:'8 rep'}]},{name:'Incline Dumbbell Press',muscles:'سنگ سەرەوە',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Cable Flyes',muscles:'سنگ',sets:[{r:'15 rep'},{r:'12 rep'}]},{name:'Overhead Press',muscles:'شان',sets:[{r:'10 rep'},{r:'8 rep'},{r:'8 rep'}]},{name:'Lateral Raises',muscles:'شان لایەنی',sets:[{r:'15 rep'},{r:'12 rep'}]},{name:'Tricep Dips',muscles:'سێجەپ',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Overhead Tricep Extension',muscles:'سێجەپ',sets:[{r:'12 rep'},{r:'10 rep'}]}]},
+      {type:'pull',name:'پشت و دوەجەپ',badge:'🔥',color:'#10B981',cal:340,exercises:[{name:'Pull-ups',muscles:'پشت',sets:[{r:'8 rep'},{r:'6 rep'},{r:'6 rep'}]},{name:'Barbell Rows',muscles:'پشت ناوەڕاست',sets:[{r:'10 rep'},{r:'8 rep'},{r:'8 rep'}]},{name:'Lat Pulldowns',muscles:'پشت فراوان',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Face Pulls',muscles:'شان دواوە',sets:[{r:'15 rep'},{r:'12 rep'}]},{name:'Barbell Curls',muscles:'دوەجەپ',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Hammer Curls',muscles:'دوەجەپ',sets:[{r:'12 rep'},{r:'10 rep'}]}]},
+      {type:'legs',name:'قاچ',badge:'🦵',color:'#F59E0B',cal:400,exercises:[{name:'Squats',muscles:'قاچ',sets:[{r:'10 rep'},{r:'8 rep'},{r:'8 rep'}]},{name:'Romanian Deadlifts',muscles:'قاچ دواوە',sets:[{r:'10 rep'},{r:'8 rep'}]},{name:'Leg Press',muscles:'قاچ',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Leg Curls',muscles:'قاچ دواوە',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Calf Raises',muscles:'لەگۆپڕ',sets:[{r:'15 rep'},{r:'12 rep'},{r:'12 rep'}]}]},
+      {type:'rest',name:'ڕۆژی ئەستراحەت',badge:'😴'},
+      {type:'upper',name:'لەش سەرەوە',badge:'💪',color:'#8B5CF6',cal:360,exercises:[{name:'Dumbbell Bench Press',muscles:'سنگ',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Cable Rows',muscles:'پشت',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Shoulder Press',muscles:'شان',sets:[{r:'10 rep'},{r:'8 rep'}]},{name:'Dumbbell Curls',muscles:'دوەجەپ',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Tricep Pushdowns',muscles:'سێجەپ',sets:[{r:'12 rep'},{r:'10 rep'}]},{name:'Shrugs',muscles:'تراپ',sets:[{r:'15 rep'},{r:'12 rep'}]}]},
+      {type:'rest',name:'ڕۆژی ئەستراحەت',badge:'😴'}
+    ];
 
-    // ══ DEVICE ID ══
-    function getDeviceId(){
-      let id=localStorage.getItem('rkf_device_id');
-      if(!id){id='DEV-'+Math.random().toString(36).substr(2,12).toUpperCase();localStorage.setItem('rkf_device_id',id);}
-      return id;
-    }
+    // ══ PRO CHECK ══
+    function isPro(){return localStorage.getItem('rkf_pro')==='1'&&!isExpired();}
+    function isExpired(){const exp=localStorage.getItem('rkf_pro_expires');return exp&&parseInt(exp)<Date.now();}
+    function updBadge(){const badge=document.getElementById('pro-badge');if(isPro()){badge.textContent='PRO ✨';badge.className='pro-badge pb-pro';}else{badge.textContent='FREE';badge.className='pro-badge pb-free';}}
+    function getDeviceId(){let id=localStorage.getItem('rkf_device_id');if(!id){id=Date.now().toString(36)+Math.random().toString(36).substr(2);localStorage.setItem('rkf_device_id',id);}return id;}
 
-    const WP={0:{type:'rest'},1:{type:'push',name:'Push Day',badge:'🔵 Push',color:'var(--blue)',cal:420,exercises:[{name:'Bench Press',muscles:'سینە',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Overhead Press',muscles:'مەڵبەند',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Dumbbell Flyes',muscles:'سینەی ئاڵۆز',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Tricep Pushdown',muscles:'تراسپس',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Lateral Raises',muscles:'مەڵبەندی ئاڵۆز',sets:[{r:'15'},{r:'15'},{r:'12'}]}]},2:{type:'pull',name:'Pull Day',badge:'🔴 Pull',color:'var(--red)',cal:390,exercises:[{name:'Deadlift',muscles:'پشت',sets:[{r:'8'},{r:'6'},{r:'5'}]},{name:'Pull-ups',muscles:'لاتیسیموس',sets:[{r:'10'},{r:'8'},{r:'8'}]},{name:'Barbell Row',muscles:'ناوەندی پشت',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Bicep Curl',muscles:'باسپس',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Face Pull',muscles:'پشتی مەڵبەند',sets:[{r:'15'},{r:'15'},{r:'15'}]}]},3:{type:'legs',name:'Leg Day',badge:'🟢 Legs',color:'var(--green)',cal:480,exercises:[{name:'Squat',muscles:'کوات + گلووت',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Romanian Deadlift',muscles:'هامسترینگ',sets:[{r:'12'},{r:'10'},{r:'10'}]},{name:'Leg Press',muscles:'کوات',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Leg Curl',muscles:'هامسترینگ',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Calf Raise',muscles:'گژوان',sets:[{r:'20'},{r:'20'},{r:'20'}]}]},4:{type:'push2',name:'Push Day',badge:'🔵 Push',color:'var(--blue)',cal:400,exercises:[{name:'Incline Press',muscles:'سینەی سەرەوە',sets:[{r:'12'},{r:'10'},{r:'8'}]},{name:'Arnold Press',muscles:'مەڵبەند',sets:[{r:'12'},{r:'10'},{r:'10'}]},{name:'Cable Flyes',muscles:'سینە',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Skull Crushers',muscles:'تراسپس',sets:[{r:'12'},{r:'10'},{r:'10'}]}]},5:{type:'pull2',name:'Pull Day',badge:'🔴 Pull',color:'var(--red)',cal:370,exercises:[{name:'Weighted Pull-ups',muscles:'لاتیسیموس',sets:[{r:'8'},{r:'6'},{r:'6'}]},{name:'Seated Cable Row',muscles:'پشت',sets:[{r:'12'},{r:'10'},{r:'10'}]},{name:'Hammer Curl',muscles:'باسپس',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Reverse Fly',muscles:'پشتی مەڵبەند',sets:[{r:'15'},{r:'15'},{r:'12'}]}]},6:{type:'full',name:'Full Body',badge:'🟡 Full',color:'var(--orange)',cal:520,exercises:[{name:'Clean & Press',muscles:'تەواوی جەستە',sets:[{r:'10'},{r:'8'},{r:'8'}]},{name:'Farmer Carry',muscles:'ناوەند',sets:[{r:'40m'},{r:'40m'},{r:'40m'}]},{name:'Burpees',muscles:'کاردیۆ',sets:[{r:'15'},{r:'12'},{r:'12'}]},{name:'Plank',muscles:'ناوەند',sets:[{r:'60s'},{r:'60s'},{r:'45s'}]},{name:'Mountain Climbers',muscles:'کاردیۆ',sets:[{r:'30s'},{r:'30s'},{r:'30s'}]}]}};
-    const DAILY_VITAMINS=[{id:'d3',name:'ڤیتامین D3',icon:'☀️',color:'#F59E0B',dose:'1000 IU',time:'بەیانی'},{id:'omega',name:'ئۆمێگا-3',icon:'🐟',color:'#0EA5E9',dose:'1000mg',time:'لەگەڵ خواردن'},{id:'mag',name:'ماگنێزیوم',icon:'💎',color:'#8B5CF6',dose:'300mg',time:'شەو'},{id:'zinc',name:'زینک',icon:'🔩',color:'#F59E0B',dose:'10mg',time:'بەیانی'},{id:'vitc',name:'ڤیتامین C',icon:'🍊',color:'#FB923C',dose:'500mg',time:'نیوەڕۆ'}];
-    function buildRecs(p){const r=[],{gender:g,age:a,goal:gl}=p||{};r.push({icon:'☀️',name:'ڤیتامین D3',dose:`${a>50?'2000':'1000'} IU ڕۆژانە`,note:'زیاتر لە %٨٠ کەسان کەمیان هەیە'});r.push({icon:'🐟',name:'ئۆمێگا-3',dose:'1000-2000mg ڕۆژانە',note:'کەمکردنەوەی ئەلتەهاب، باشکردنی دڵ و مێشک'});r.push({icon:'💎',name:'ماگنێزیوم',dose:'300-400mg شەوانە',note:'خەوی باشتر، کەمکردنەوەی ستریس'});if(gl==='gain'){r.push({icon:'⚡',name:'کرێاتین',dose:'5g ڕۆژانە',note:'زیادکردنی بەهێزی وەرزش'});r.push({icon:'🔩',name:'زینک',dose:`${g==='male'?'11':'8'}mg ڕۆژانە`,note:'گرنگە بۆ هۆرمۆن'});}if(gl==='lose'){r.push({icon:'🔥',name:'L-کارنیتین',dose:'1000-2000mg پێش وەرزش',note:'گواستنەوەی چەوی بۆ وزە'});}if(g==='female'){r.push({icon:'🌹',name:'ئاسن',dose:'18mg ڕۆژانە',note:'گرنگە بۆ بانبەند'});}if(a>40){r.push({icon:'🦴',name:'کلسیوم',dose:'1000mg ڕۆژانە',note:'پاراستنی ئێسک'});r.push({icon:'🔵',name:'B12',dose:'500mcg ڕۆژانە',note:'وزە و دزگای دەمار'});}return r;}
-
-    let CU=null, doneEx=new Set(), selPlanVal='monthly';
-
-    onAuthStateChanged(auth, async user=>{
-      if(!user){window.location.href='index.html';return;}
-      CU=user;
-      try{const snap=await getDoc(doc(db,'users',user.uid));if(snap.exists()&&snap.data().profile)localStorage.setItem('rkf_profile',JSON.stringify(snap.data().profile));}catch(e){}
-      document.getElementById('loading-screen').style.display='none';
-      await checkLicenseFS();
-      updBadge();
-      const tab=new URLSearchParams(location.search).get('tab');
-      if(tab==='workouts')switchTab('workouts'); else switchTab('vitamins');
-    });
-
-    // ══ LICENSE WITH DEVICE LOCK ══
-    async function checkLicenseFS(){
-      const code=localStorage.getItem('rkf_license_code');
-      if(!code)return;
-      try{
-        const snap=await getDoc(doc(db,'licenses',code));
-        if(!snap.exists()||!snap.data().active){clearLic();return;}
-        const lic=snap.data();
-        const now=Date.now();
-        const myDevice=getDeviceId();
-        // Check device lock
-        if(lic.deviceId&&lic.deviceId!==myDevice){
-          clearLic();
-          toast('🔒 ئەم کۆدە لە ئامێرێکی تر بەکارهاتووە','red');
-          return;
-        }
-        if(lic.expiresAt&&parseInt(lic.expiresAt)<now){localStorage.setItem('rkf_pro','expired');return;}
-        localStorage.setItem('rkf_pro','1');
-        if(lic.expiresAt)localStorage.setItem('rkf_pro_expires',lic.expiresAt);
-      }catch(e){}
-    }
-
-    function clearLic(){localStorage.removeItem('rkf_pro');localStorage.removeItem('rkf_license_code');localStorage.removeItem('rkf_pro_expires');}
-    function isPro(){
-      if(localStorage.getItem('rkf_pro')!=='1')return false;
-      const exp=localStorage.getItem('rkf_pro_expires');
-      if(!exp)return true;
-      if(Date.now()>parseInt(exp)){localStorage.setItem('rkf_pro','expired');return false;}
-      return true;
-    }
-    function isExpired(){return localStorage.getItem('rkf_pro')==='expired';}
-
-    function updBadge(){const pro=isPro();const b=document.getElementById('pro-badge');b.textContent=pro?'PRO ✓':'FREE';b.className='pro-badge '+(pro?'pb-pro':'pb-free');}
+    setTimeout(()=>{document.getElementById('loading-screen').style.display='none';updBadge();renderVit();renderWo();},800);
 
     window.switchTab=tab=>{
-      ['vitamins','workouts'].forEach(t=>{document.getElementById('page-'+t).classList.toggle('active',t===tab);document.getElementById('tt-'+t.slice(0,2)).classList.toggle('active',t===tab);});
+      document.querySelectorAll('.tt').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      event.target.closest('.tt').classList.add('active');
+      document.getElementById('page-'+tab).classList.add('active');
       if(tab==='vitamins')renderVit();
       if(tab==='workouts')renderWo();
     };
@@ -344,7 +300,7 @@
       const code=document.getElementById(prefix+'-inp').value.trim().toUpperCase();
       const errEl=document.getElementById(prefix+'-err'),okEl=document.getElementById(prefix+'-ok'),btn=document.getElementById(prefix+'-btn');
       errEl.style.display='none';okEl.style.display='none';
-      if(code.length<14){errEl.style.display='block';return;}
+      if(code.length<14){errEl.textContent='❌ کۆدەکە هەڵەیە یان ڕاگیراوە';errEl.style.display='block';return;}
       btn.textContent='...';btn.disabled=true;
       try{
         const snap=await getDoc(doc(db,'licenses',code));
@@ -371,6 +327,51 @@
 
     window.fmtLic=inp=>{let v=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'');const parts=[];if(v.startsWith('RIKFIT')){parts.push('RIKFIT');v=v.slice(6);}while(v.length>0){parts.push(v.slice(0,4));v=v.slice(4);}inp.value=parts.join('-').slice(0,22);};
 
+    // ══ RDA CALCULATIONS ══
+    function calculateRDA(){
+      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
+      const age=prof.age||25;
+      const gender=prof.gender||'male';
+      const weight=prof.weight||70;
+      
+      // RDA values based on age and gender (simplified)
+      const rda={
+        vitaminA:gender==='male'?900:700,      // μg
+        vitaminC:gender==='male'?90:75,        // mg
+        vitaminD:15,                            // μg
+        vitaminE:15,                            // mg
+        vitaminK:gender==='male'?120:90,       // μg
+        vitaminB1:gender==='male'?1.2:1.1,     // mg
+        vitaminB2:gender==='male'?1.3:1.1,     // mg
+        vitaminB3:gender==='male'?16:14,       // mg
+        vitaminB6:age>50?1.7:1.3,              // mg
+        vitaminB12:2.4,                         // μg
+        folate:400,                             // μg
+        calcium:age>50?1200:1000,              // mg
+        iron:gender==='male'?8:18,             // mg
+        magnesium:gender==='male'?400:310,     // mg
+        zinc:gender==='male'?11:8,             // mg
+        potassium:3400,                         // mg
+        fiber:gender==='male'?38:25            // g
+      };
+      return rda;
+    }
+
+    function getMealsIntake(){
+      const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      const meals=td.meals||[];
+      const intake={vitaminA:0,vitaminC:0,vitaminD:0,calcium:0,iron:0,fiber:0};
+      meals.forEach(m=>{
+        intake.vitaminA+=(m.vitaminA||0);
+        intake.vitaminC+=(m.vitaminC||0);
+        intake.vitaminD+=(m.vitaminD||0);
+        intake.calcium+=(m.calcium||0);
+        intake.iron+=(m.iron||0);
+        intake.fiber+=(m.fiber||0);
+      });
+      return intake;
+    }
+
     // ══ VITAMINS ══
     function renderVit(){
       const pro=isPro(),exp=isExpired();
@@ -378,16 +379,37 @@
       document.getElementById('vit-expired').style.display=exp?'block':'none';
       document.getElementById('vit-content').style.display=pro?'block':'none';
       if(!pro)return;
-      const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
-      const today=JSON.parse(localStorage.getItem('rkf_today')||'{}');
-      const taken=today.vitamins_taken||[];
-      document.getElementById('vit-recs').innerHTML=buildRecs(prof).map(r=>`<div class="vit-rec"><div class="vr-top"><span style="font-size:20px">${r.icon}</span><span class="vr-name">${r.name}</span></div><span class="vr-dose">💊 ${r.dose}</span><div class="vr-note">${r.note}</div></div>`).join('');
-      const total=DAILY_VITAMINS.length,done=taken.length,pct=Math.round(done/total*100);
-      document.getElementById('vit-progress').style.width=pct+'%';
-      document.getElementById('vit-progress-label').textContent=`${done} / ${total} وەریانگرت — ${pct}%`;
-      document.getElementById('vit-tracker').innerHTML=DAILY_VITAMINS.map(v=>`<div class="vit-item"><div class="vi-icon-wrap" style="background:${v.color}20">${v.icon}</div><div class="vi-info"><div class="vi-name">${v.name}</div><div class="vi-meta">${v.dose} • ⏰ ${v.time}</div></div><button class="vi-check${taken.includes(v.id)?' taken':''}" onclick="toggleVit('${v.id}')">${taken.includes(v.id)?'✓':''}</button></div>`).join('');
+      
+      const rda=calculateRDA();
+      const intake=getMealsIntake();
+      
+      const nutrients=[
+        {id:'vitaminA',name:'ڤیتامین A',unit:'μg',icon:'🥕',category:'vitamin'},
+        {id:'vitaminC',name:'ڤیتامین C',unit:'mg',icon:'🍊',category:'vitamin'},
+        {id:'vitaminD',name:'ڤیتامین D',unit:'μg',icon:'☀️',category:'vitamin'},
+        {id:'calcium',name:'کالسیۆم',unit:'mg',icon:'🥛',category:'mineral'},
+        {id:'iron',name:'ئاسن',unit:'mg',icon:'🥩',category:'mineral'},
+        {id:'fiber',name:'فایبەر',unit:'g',icon:'🌾',category:'other'}
+      ];
+      
+      const vitamins=nutrients.filter(n=>n.category==='vitamin');
+      const minerals=nutrients.filter(n=>n.category==='mineral');
+      const others=nutrients.filter(n=>n.category==='other');
+      
+      const renderNutrient=n=>{
+        const goal=rda[n.id]||100;
+        const curr=intake[n.id]||0;
+        const pct=Math.min(Math.round(curr/goal*100),100);
+        return`<div class="nutrient-card"><div class="nc-top"><div class="nc-name">${n.icon} ${n.name}</div><div class="nc-values"><span class="nc-current">${Math.round(curr)}</span> / ${goal} ${n.unit}</div></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div><div class="nc-note">${pct}% لە پێداویستی ڕۆژانە</div></div>`;
+      };
+      
+      document.getElementById('vitamin-list').innerHTML=vitamins.map(renderNutrient).join('');
+      document.getElementById('mineral-list').innerHTML=minerals.map(renderNutrient).join('');
+      document.getElementById('other-list').innerHTML=others.map(renderNutrient).join('');
+      
+      const totalPct=Math.round(nutrients.reduce((sum,n)=>sum+Math.min((intake[n.id]||0)/(rda[n.id]||100)*100,100),0)/nutrients.length);
+      document.getElementById('overall-progress').innerHTML=`<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${totalPct}%"></div></div><div style="text-align:center;margin-top:8px;font-size:13px;color:var(--text2);">${totalPct}% لە کۆی گشتی</div>`;
     }
-    window.toggleVit=id=>{const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');td.vitamins_taken=td.vitamins_taken||[];const i=td.vitamins_taken.indexOf(id);i>=0?td.vitamins_taken.splice(i,1):td.vitamins_taken.push(id);localStorage.setItem('rkf_today',JSON.stringify(td));renderVit();toast(i>=0?'↩️ لابرا':'✅ تۆمارکرا!',i>=0?'':'green');};
 
     // ══ WORKOUTS ══
     function renderWo(){

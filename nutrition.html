@@ -55,7 +55,8 @@
     .mg-icon{font-size:20px;}
     .mg-name{font-size:14px;font-weight:700;}
     .mg-cal{margin-right:auto;font-size:13px;color:var(--text2);}
-    .meal-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+    .meal-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s;}
+    .meal-item:hover{border-color:var(--blue);}
     .meal-emoji{font-size:32px;flex-shrink:0;}
     .meal-info{flex:1;}
     .meal-name{font-size:15px;font-weight:700;}
@@ -69,6 +70,16 @@
     .meal-cal-num{font-size:18px;font-weight:900;}
     .meal-cal-lbl{font-size:11px;color:var(--text2);}
     .meal-del{width:32px;height:32px;border-radius:8px;border:none;background:rgba(239,68,68,0.1);color:var(--red);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    
+    /* MEAL DETAILS (expandable) */
+    .meal-details{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+    .meal-details.open{display:block;}
+    .meal-det-title{font-size:12px;font-weight:800;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+    .micro-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;}
+    .micro-item{background:var(--card2);padding:8px 10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;}
+    .micro-name{font-size:11px;color:var(--text2);}
+    .micro-val{font-size:12px;font-weight:700;color:var(--purple);}
+    
     .empty-meals{text-align:center;padding:40px 20px;background:var(--card);border:1px dashed var(--border);border-radius:20px;}
     .em-icon{font-size:48px;margin-bottom:12px;}
     .empty-meals p{color:var(--text2);font-size:15px;}
@@ -131,298 +142,280 @@
     .qty-label{font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:600;}
     .qty-wrap{display:flex;align-items:center;background:var(--card2);border:1.5px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:10px;}
     .qty-wrap input{border:none;background:transparent;text-align:center;font-size:24px;font-weight:800;flex:1;padding:15px 6px;color:var(--text);font-family:'Tajawal',sans-serif;outline:none;}
-    .qb{width:56px;min-height:58px;background:transparent;border:none;color:var(--blue);font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Tajawal',sans-serif;}
-    .qty-unit-lbl{padding:0 16px;color:var(--text2);font-size:13px;font-weight:700;}
-    .qty-preview{padding:12px 14px;background:var(--card2);border-radius:11px;display:flex;justify-content:space-between;font-size:13px;margin-bottom:14px;}
-    .qp-label{color:var(--text2);}
-    .qp-val{font-weight:800;color:var(--green);}
-    .modal-nav{display:flex;gap:10px;}
-    .btn-back{flex:0;padding:14px 20px;border-radius:13px;border:1.5px solid var(--border);background:transparent;color:var(--text2);font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;}
-    .btn-confirm{flex:1;padding:14px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--green),#059669);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;}
-    .btn-confirm:disabled{opacity:0.5;cursor:not-allowed;}
+    .qty-wrap button{border:none;background:transparent;color:var(--text2);font-size:24px;padding:0 16px;cursor:pointer;transition:color 0.2s;}
+    .qty-wrap button:hover{color:var(--text);}
+    .qty-unit{font-size:13px;color:var(--text2);padding-left:14px;}
+    .cal-preview{text-align:center;font-size:14px;color:var(--text2);margin-bottom:14px;}
+    .cal-preview span{font-size:22px;font-weight:900;color:var(--green);display:block;margin-bottom:4px;}
+    .btn-confirm{width:100%;padding:16px;border-radius:14px;border:none;background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(16,185,129,0.3);transition:all 0.2s;}
+    .btn-confirm:active{transform:scale(0.98);}
+    .btn-back{width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--text2);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;}
 
-    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
     @keyframes spin{to{transform:rotate(360deg);}}
     @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+
+    .modal-step{display:none;}
+    .modal-step.active{display:block;}
   </style>
 </head>
 <body>
   <div class="loading-screen" id="loading-screen"><div class="spinner"></div></div>
   <div class="glow g1"></div>
 
+  <!-- TOP BAR -->
   <div class="topbar">
-    <div><h2>خۆراک 🍽️</h2><p id="date-txt"></p></div>
-    <div class="live-badge"><div class="live-dot"></div>ریل تایم</div>
+    <div>
+      <h2>RikFit</h2>
+      <p id="today-date"></p>
+    </div>
+    <div class="live-badge"><span class="live-dot"></span>LIVE</div>
   </div>
 
+  <!-- PAGE -->
   <div class="page">
-    <!-- Rings -->
+    <!-- RINGS -->
     <div class="rings-card">
-      <div class="rings-title">پیشرفتی ئیمڕۆ</div>
-      <div class="rings-row">
-        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-cal" cx="40" cy="40" r="32" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 0.8s ease"/></svg><div class="ring-mini-center" id="rc-cal">0%</div></div><div class="ri-val" id="rv-cal">0</div><div class="ri-label">کالۆری</div><div class="ri-goal" id="rg-cal">/0</div></div>
-        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-pro" cx="40" cy="40" r="32" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 0.8s ease"/></svg><div class="ring-mini-center" id="rc-pro">0%</div></div><div class="ri-val" id="rv-pro">0g</div><div class="ri-label">پڕۆتین</div><div class="ri-goal" id="rg-pro">/0g</div></div>
-        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-carb" cx="40" cy="40" r="32" fill="none" stroke="var(--orange)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 0.8s ease"/></svg><div class="ring-mini-center" id="rc-carb">0%</div></div><div class="ri-val" id="rv-carb">0g</div><div class="ri-label">کاربۆ</div><div class="ri-goal" id="rg-carb">/0g</div></div>
-        <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-fat" cx="40" cy="40" r="32" fill="none" stroke="var(--green)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 0.8s ease"/></svg><div class="ring-mini-center" id="rc-fat">0%</div></div><div class="ri-val" id="rv-fat">0g</div><div class="ri-label">چەوی</div><div class="ri-goal" id="rg-fat">/0g</div></div>
-      </div>
+      <div class="rings-title">ماکرۆکان</div>
+      <div class="rings-row" id="rings-row"></div>
     </div>
 
-    <!-- Overflow warning -->
+    <!-- OVERFLOW WARNING -->
     <div class="overflow-warning" id="overflow-warning">
-      <div class="ow-title">⚠️ زیادەڕەوی کردووە!</div>
+      <div class="ow-title">⚠️ تێپەڕیوی لە ئامانجەکان</div>
       <div class="ow-items" id="overflow-items"></div>
     </div>
 
-    <!-- Meals list -->
+    <!-- MEALS BY TYPE -->
     <div class="sec-header">
-      <div class="sec-title">🍽️ خواردنەکان</div>
-      <button class="btn-add" onclick="openModal()">+</button>
+      <div class="sec-title">خواردنەکانی ئەمڕۆ</div>
+      <button class="btn-add" onclick="openAddModal()">+</button>
     </div>
     <div id="meals-container"></div>
   </div>
 
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <a href="home.html"      class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">ماڵ</span></a>
-    <a href="nutrition.html" class="nav-item active"><span class="nav-icon">🍽️</span><span class="nav-label">خۆراک</span></a>
-    <a href="vitamins.html"  class="nav-item"><span class="nav-icon">💊</span><span class="nav-label">ڤیتامین</span></a>
+    <a href="nutrition.html" class="nav-item active">
+      <span class="nav-icon">🍽️</span>
+      <span class="nav-label">خۆراک</span>
+    </a>
+    <a href="vitamins.html" class="nav-item">
+      <span class="nav-icon">💊</span>
+      <span class="nav-label">ڤیتامین</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">پرۆفایل</span>
+    </a>
   </nav>
 
   <!-- ADD MEAL MODAL -->
   <div class="overlay" id="add-modal">
-    <div class="modal-sheet"><div class="modal-inner">
-      <div class="modal-handle"></div>
-
-      <!-- Step 1 -->
-      <div id="modal-s1">
-        <div class="modal-title">جۆری خواردن هەڵبژێرە 🍴</div>
-        <div class="meal-type-grid">
-          <div class="mt-opt" data-type="breakfast" onclick="selMealType('breakfast')"><div class="mt-icon">🌅</div><div class="mt-name">بەیانی خواردن</div></div>
-          <div class="mt-opt" data-type="lunch"     onclick="selMealType('lunch')"><div class="mt-icon">☀️</div><div class="mt-name">نیوەڕۆ خواردن</div></div>
-          <div class="mt-opt" data-type="dinner"    onclick="selMealType('dinner')"><div class="mt-icon">🌙</div><div class="mt-name">شەو خواردن</div></div>
-          <div class="mt-opt" data-type="snack"     onclick="selMealType('snack')"><div class="mt-icon">🍎</div><div class="mt-name">میوە / قۆناغ</div></div>
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div id="modal-s2" style="display:none">
-        <div class="modal-title">خواردن هەڵبژێرە</div>
-        <!-- Search — readonly until tapped -->
-        <div class="search-row">
-          <input type="text" class="search-box" id="food-search" placeholder="🔍 ناوی خواردن..." oninput="filterFoods(this.value)" readonly onfocus="this.removeAttribute('readonly')">
-        </div>
-        <!-- Category tabs — with world foods -->
-        <div class="cat-tabs" id="cat-tabs">
-          <button class="cat-tab active" data-cat="all"     onclick="selCat('all')">🍽️ هەموو</button>
-          <button class="cat-tab" data-cat="protein"        onclick="selCat('protein')">🥩 پڕۆتین</button>
-          <button class="cat-tab" data-cat="carb"           onclick="selCat('carb')">🌾 کاربۆ</button>
-          <button class="cat-tab" data-cat="fat"            onclick="selCat('fat')">🥑 چەوی</button>
-          <button class="cat-tab" data-cat="fruit"          onclick="selCat('fruit')">🍎 میوە</button>
-          <button class="cat-tab" data-cat="veggie"         onclick="selCat('veggie')">🥦 سەوزە</button>
-          <button class="cat-tab" data-cat="dairy"          onclick="selCat('dairy')">🥛 شیر</button>
-          <button class="cat-tab" data-cat="drink"          onclick="selCat('drink')">🧃 خواردنەوە</button>
-          <button class="cat-tab" data-cat="world"          onclick="selCat('world')">🌍 جیهانی</button>
-          <button class="cat-tab" data-cat="other"          onclick="selCat('other')">دیکە</button>
-        </div>
-        <div class="food-list" id="food-list">
-          <div class="loading-foods"><div class="mini-spin"></div>بارکردن...</div>
-        </div>
-        <div class="modal-nav" style="margin-top:12px">
-          <button class="btn-back" onclick="backToS1()">← گەڕانەوە</button>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div id="modal-s3" style="display:none">
-        <div class="s3-title">
-          <span id="s3-emoji" style="font-size:32px"></span>
-          <div>
-            <div id="s3-name" style="font-size:16px;font-weight:800"></div>
-            <div id="s3-name-en" style="font-size:12px;color:var(--text2)"></div>
+    <div class="modal-sheet">
+      <div class="modal-inner">
+        <div class="modal-handle"></div>
+        
+        <!-- Step 1: Select meal type -->
+        <div class="modal-step active" id="step-1">
+          <div class="modal-title">جۆری خواردن هەڵبژێرە</div>
+          <div class="meal-type-grid">
+            <div class="mt-opt" onclick="selMealType('breakfast')">
+              <div class="mt-icon">🌅</div>
+              <div class="mt-name">بەیانی</div>
+            </div>
+            <div class="mt-opt" onclick="selMealType('lunch')">
+              <div class="mt-icon">☀️</div>
+              <div class="mt-name">نیوەڕۆ</div>
+            </div>
+            <div class="mt-opt" onclick="selMealType('dinner')">
+              <div class="mt-icon">🌙</div>
+              <div class="mt-name">ئێوارە</div>
+            </div>
+            <div class="mt-opt" onclick="selMealType('snack')">
+              <div class="mt-icon">🍪</div>
+              <div class="mt-name">خواردنی سووک</div>
+            </div>
           </div>
         </div>
-        <div id="unit-sel-wrap" style="display:none;margin-bottom:12px">
-          <div class="qty-label">یەکەی پێوانە هەڵبژێرە</div>
-          <div class="unit-selector" id="unit-selector"></div>
+
+        <!-- Step 2: Search & select food -->
+        <div class="modal-step" id="step-2">
+          <div class="modal-title">خواردنێک هەڵبژێرە</div>
+          <div class="search-row">
+            <input type="text" id="food-search" class="search-box" placeholder="گەڕان..." oninput="filterFoods(this.value)" readonly onfocus="this.removeAttribute('readonly')">
+          </div>
+          <div class="cat-tabs">
+            <button class="cat-tab active" data-cat="all" onclick="selCat('all')">هەموو</button>
+            <button class="cat-tab" data-cat="پرۆتین" onclick="selCat('پرۆتین')">پرۆتین</button>
+            <button class="cat-tab" data-cat="کاربۆهایدرێت" onclick="selCat('کاربۆهایدرێت')">کاربۆ</button>
+            <button class="cat-tab" data-cat="میوە" onclick="selCat('میوە')">میوە</button>
+            <button class="cat-tab" data-cat="سەوزە" onclick="selCat('سەوزە')">سەوزە</button>
+            <button class="cat-tab" data-cat="شیرەمەنی" onclick="selCat('شیرەمەنی')">شیرەمەنی</button>
+          </div>
+          <div class="food-list" id="food-list"></div>
+          <button class="btn-back" onclick="backToS1()">گەڕانەوە</button>
         </div>
-        <div class="qty-label" id="qty-label-txt">چەند گرام؟</div>
-        <div class="qty-wrap">
-          <button class="qb" onclick="adjQty(-1)">−</button>
-          <input type="number" id="qty-inp" value="100" min="0.1" step="0.1" inputmode="decimal" oninput="updatePreview()">
-          <span class="qty-unit-lbl" id="qty-unit-lbl">گرام</span>
-          <button class="qb" onclick="adjQty(1)">+</button>
-        </div>
-        <div class="qty-preview">
-          <span class="qp-label">کالۆری:</span>
-          <span class="qp-val" id="qty-cal-preview">—</span>
-        </div>
-        <div class="modal-nav">
-          <button class="btn-back" onclick="backToS2()">← گەڕانەوە</button>
-          <button class="btn-confirm" id="btn-add-meal" onclick="addMeal()">✓ زیادکردن</button>
+
+        <!-- Step 3: Set quantity -->
+        <div class="modal-step" id="step-3">
+          <div class="s3-title">
+            <span id="s3-emoji"></span>
+            <div>
+              <div id="s3-name"></div>
+              <div style="font-size:13px;color:var(--text2);font-weight:400;" id="s3-name-en"></div>
+            </div>
+          </div>
+          <div id="unit-sel-wrap">
+            <div class="qty-label">یەکە هەڵبژێرە</div>
+            <div class="unit-selector" id="unit-selector"></div>
+          </div>
+          <div class="qty-label" id="qty-label-txt">چەند دانە؟</div>
+          <div class="qty-wrap">
+            <button onclick="adjQty(-1)">−</button>
+            <input type="number" id="qty-inp" value="1" step="1" min="0.1" oninput="updatePreview()">
+            <span class="qty-unit" id="qty-unit-lbl">دانە</span>
+            <button onclick="adjQty(1)">+</button>
+          </div>
+          <div class="cal-preview">
+            <span id="qty-cal-preview">0 cal</span>
+            کالۆری
+          </div>
+          <button class="btn-confirm" onclick="addMeal()">زیادکردن</button>
+          <button class="btn-back" onclick="backToS2()">گەڕانەوە</button>
         </div>
       </div>
-
-    </div></div>
+    </div>
   </div>
 
   <script type="module">
-    import { initializeApp }                    from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged }      from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, collection,
-             onSnapshot, query, where }         from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import{initializeApp}from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import{getFirestore,collection,getDocs}from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    const app=initializeApp({apiKey:"AIzaSyCpWGLPYMHLEhd6bV0w3PAQ4aLBG0W-2bY",authDomain:"rikfit-d8f42.firebaseapp.com",projectId:"rikfit-d8f42"});
+    const db=getFirestore(app);
+    window.db=db;
+    let allFoods=[],filteredFoods=[],searchQ='',activeCat='all',selectedMealType='',selectedFood=null,selectedUnit=null,foodsLoaded=false;
 
-    const app=initializeApp({apiKey:"AIzaSyBhYiFcQeB2r6CWDiFvqV0LUPNVoow1sjM",authDomain:"appmass-f26bd.firebaseapp.com",projectId:"appmass-f26bd",storageBucket:"appmass-f26bd.firebasestorage.app",messagingSenderId:"735578268323",appId:"1:735578268323:web:4f5e27ce1307db429bd516"});
-    const auth=getAuth(app), db=getFirestore(app);
-
-    let allFoods=[], filteredFoods=[];
-    let selectedFood=null, selectedUnit=null, selectedMealType=null;
-    let activeCat='all', searchQ='', foodsLoaded=false;
-
-    onAuthStateChanged(auth, user=>{
-      if(!user){window.location.href='index.html';return;}
-      document.getElementById('loading-screen').style.display='none';
-      checkReset();
-      document.getElementById('date-txt').textContent=new Date().toLocaleDateString('en-GB');
-      updateRings();
-      renderMeals();
-      startFoodListener();
-    });
-
-    function checkReset(){
-      const ts=todayStr(),td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
-      if(td.date!==ts)localStorage.setItem('rkf_today',JSON.stringify({date:ts,water:0,sleep:7.5,sleepQ:'good',meals:[],workouts:[]}));
-    }
-
-    // ══ REAL-TIME FOODS ══
-    function startFoodListener(){
+    async function loadFoods(){
       try{
-        const q=query(collection(db,'foods'),where('active','==',true));
-        onSnapshot(q,snap=>{
-          allFoods=snap.docs.map(d=>({id:d.id,...d.data()}));
-          allFoods.sort((a,b)=>(a.name_ku||'').localeCompare(b.name_ku||''));
-          foodsLoaded=true;
-          applyFilter();
-          if(document.getElementById('modal-s2').style.display!=='none')renderFoodList();
-        },()=>{foodsLoaded=true;applyFilter();});
-      }catch{foodsLoaded=true;applyFilter();}
+        const snap=await getDocs(collection(db,'foods'));
+        allFoods=snap.docs.map(d=>({id:d.id,...d.data()}));
+        filteredFoods=allFoods;
+        foodsLoaded=true;
+      }catch(e){console.error(e);}
     }
+    loadFoods();
 
     function applyFilter(){
-      const q=searchQ.toLowerCase();
       filteredFoods=allFoods.filter(f=>{
-        if(activeCat!=='all'&&f.category!==activeCat)return false;
-        if(q&&!(f.name_ku||'').toLowerCase().includes(q)&&!(f.name_en||'').toLowerCase().includes(q))return false;
-        return true;
+        const matchCat=activeCat==='all'||(f.categories||[]).includes(activeCat);
+        const nameKu=(f.name_ku||'').toLowerCase();
+        const nameEn=(f.name_en||'').toLowerCase();
+        const matchQ=!searchQ||nameKu.includes(searchQ.toLowerCase())||nameEn.includes(searchQ.toLowerCase());
+        return matchCat&&matchQ;
       });
     }
 
-    // ══ RINGS + OVERFLOW ══
-    function updateRings(){
+    setTimeout(()=>{document.getElementById('loading-screen').style.display='none';},800);
+    document.getElementById('today-date').textContent=new Date().toLocaleDateString('ckb-IQ',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    updateRings();renderMeals();
+
+    // ═════ GOALS ═════
+    function getGoals(){
       const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
-      const goals=prof.goals||{calories:2000,protein:120,carbs:250,fat:60};
-      const today=JSON.parse(localStorage.getItem('rkf_today')||'{}');
-      const meals=today.meals||[];
-      const t={
-        cal:meals.reduce((s,m)=>s+(m.calories||0),0),
-        pro:meals.reduce((s,m)=>s+(m.protein||0),0),
-        carb:meals.reduce((s,m)=>s+(m.carbs||0),0),
-        fat:meals.reduce((s,m)=>s+(m.fat||0),0)
+      return{
+        calories:prof.goal_calories||2000,
+        protein:prof.goal_protein||150,
+        carbs:prof.goal_carbs||200,
+        fat:prof.goal_fat||60
       };
-      const circ=2*Math.PI*32;
-      function sR(id,rId,val,goal,lbl,color){
-        const over=val>goal;
-        const pct=Math.min(1,val/goal);
-        const ring=document.getElementById(rId);
-        ring.style.strokeDashoffset=circ*(1-pct);
-        ring.style.stroke=over?'var(--red)':color;
-        document.getElementById('rc-'+id).textContent=over?'🔴':Math.round(pct*100)+'%';
-        const valEl=document.getElementById('rv-'+id);
-        valEl.textContent=Math.round(val*10)/10+(lbl||'');
-        valEl.className='ri-val'+(over?' over':'');
-        document.getElementById('rg-'+id).textContent='/'+goal+(lbl||'');
-      }
-      sR('cal','r-cal',t.cal,goals.calories,'','var(--blue)');
-      sR('pro','r-pro',t.pro,goals.protein,'g','var(--blue)');
-      sR('carb','r-carb',t.carb,goals.carbs,'g','var(--orange)');
-      sR('fat','r-fat',t.fat,goals.fat,'g','var(--green)');
+    }
 
-      // Overflow warning
+    function updateRings(){
+      const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      const meals=td.meals||[];
+      const totals={calories:0,protein:0,carbs:0,fat:0};
+      meals.forEach(m=>{
+        totals.calories+=(m.calories||0);
+        totals.protein+=(m.protein||0);
+        totals.carbs+=(m.carbs||0);
+        totals.fat+=(m.fat||0);
+      });
+      const goals=getGoals();
+      const pcts={
+        calories:Math.round(totals.calories/goals.calories*100),
+        protein:Math.round(totals.protein/goals.protein*100),
+        carbs:Math.round(totals.carbs/goals.carbs*100),
+        fat:Math.round(totals.fat/goals.fat*100)
+      };
       const overflows=[];
-      if(t.cal>goals.calories)overflows.push({label:'🔥 کالۆری',over:Math.round(t.cal-goals.calories),unit:'cal'});
-      if(t.pro>goals.protein)overflows.push({label:'🥩 پڕۆتین',over:Math.round((t.pro-goals.protein)*10)/10,unit:'g'});
-      if(t.carb>goals.carbs)overflows.push({label:'🌾 کاربۆهیدرات',over:Math.round((t.carb-goals.carbs)*10)/10,unit:'g'});
-      if(t.fat>goals.fat)overflows.push({label:'🥑 چەوی',over:Math.round((t.fat-goals.fat)*10)/10,unit:'g'});
-      const warn=document.getElementById('overflow-warning');
+      if(pcts.calories>100)overflows.push({label:'کالۆری',val:Math.round(totals.calories)+' / '+goals.calories});
+      if(pcts.protein>100)overflows.push({label:'پرۆتین',val:Math.round(totals.protein)+'g / '+goals.protein+'g'});
+      if(pcts.carbs>100)overflows.push({label:'کاربۆ',val:Math.round(totals.carbs)+'g / '+goals.carbs+'g'});
+      if(pcts.fat>100)overflows.push({label:'چەوری',val:Math.round(totals.fat)+'g / '+goals.fat+'g'});
       if(overflows.length){
-        warn.style.display='block';
-        document.getElementById('overflow-items').innerHTML=overflows.map(o=>`
-          <div class="ow-item">
-            <span class="ow-label">${o.label}</span>
-            <span class="ow-val">+${o.over}${o.unit} زیادەڕەویت کردووە</span>
-          </div>`).join('');
-      }else{warn.style.display='none';}
+        document.getElementById('overflow-warning').style.display='block';
+        document.getElementById('overflow-items').innerHTML=overflows.map(o=>`<div class="ow-item"><span class="ow-label">${o.label}</span><span class="ow-val">${o.val}</span></div>`).join('');
+      }else{document.getElementById('overflow-warning').style.display='none';}
+      const ringHTML=(label,total,goal,color,pct)=>{
+        const r=32,circ=2*Math.PI*r,off=circ*(1-Math.min(pct,100)/100);
+        const isOver=pct>100;
+        return`<div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80"><circle cx="40" cy="40" r="${r}" fill="none" stroke="var(--border)" stroke-width="6"/><circle cx="40" cy="40" r="${r}" fill="none" stroke="${isOver?'var(--red)':color}" stroke-width="6" stroke-dasharray="${circ}" stroke-dashoffset="${off}" stroke-linecap="round"/></svg><div class="ring-mini-center">${pct}%</div></div><div class="ri-val${isOver?' over':''}" style="color:${color}">${Math.round(total)}</div><div class="ri-label">${label}</div><div class="ri-goal">هدف: ${goal}</div></div>`;
+      };
+      document.getElementById('rings-row').innerHTML=ringHTML('کالۆری',totals.calories,goals.calories,'var(--green)',pcts.calories)+ringHTML('پرۆتین',totals.protein,goals.protein+'g','var(--blue)',pcts.protein)+ringHTML('کاربۆ',totals.carbs,goals.carbs+'g','var(--orange)',pcts.carbs)+ringHTML('چەوری',totals.fat,goals.fat+'g','var(--green)',pcts.fat);
     }
 
-    // ══ MEALS RENDER ══
     function renderMeals(){
-      const today=JSON.parse(localStorage.getItem('rkf_today')||'{}'),meals=today.meals||[];
+      const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      const meals=td.meals||[];
+      const groups={breakfast:{name:'بەیانی',icon:'🌅',meals:[]},lunch:{name:'نیوەڕۆ',icon:'☀️',meals:[]},dinner:{name:'ئێوارە',icon:'🌙',meals:[]},snack:{name:'خواردنی سووک',icon:'🍪',meals:[]}};
+      meals.forEach(m=>groups[m.type]?.meals.push(m));
       const cont=document.getElementById('meals-container');
-      if(!meals.length){cont.innerHTML='<div class="empty-meals"><div class="em-icon">🍽️</div><p>هێشتا خواردنت تۆمار نەکراوە</p><div class="em-hint">بە + خواردنت زیاد بکە</div></div>';return;}
-      const grps={breakfast:{name:'بەیانی خواردن',icon:'🌅',meals:[]},lunch:{name:'نیوەڕۆ خواردن',icon:'☀️',meals:[]},dinner:{name:'شەو خواردن',icon:'🌙',meals:[]},snack:{name:'قۆناغ',icon:'🍎',meals:[]}};
-      meals.forEach(m=>{if(grps[m.type])grps[m.type].meals.push(m);});
-      let html='';
-      for(const[k,g]of Object.entries(grps)){
-        if(!g.meals.length)continue;
-        const gC=g.meals.reduce((s,m)=>s+(m.calories||0),0);
-        html+=`<div class="meal-group"><div class="mg-header"><span class="mg-icon">${g.icon}</span><span class="mg-name">${g.name}</span><span class="mg-cal">${Math.round(gC)} cal</span></div>`;
-        g.meals.forEach(m=>{
-          html+=`<div class="meal-item">
-            <div class="meal-emoji">${m.emoji||'🍽️'}</div>
-            <div class="meal-info">
-              <div class="meal-name">${m.name_ku||m.name_en||'—'}</div>
-              <div class="meal-sources">${m.qty} ${m.unit||'g'}</div>
-              <div class="meal-macros">
-                <span class="mm mm-p">P:${Math.round(m.protein*10)/10}g</span>
-                <span class="mm mm-c">C:${Math.round(m.carbs*10)/10}g</span>
-                <span class="mm mm-f">F:${Math.round(m.fat*10)/10}g</span>
-              </div>
-            </div>
-            <div class="meal-cal">
-              <div class="meal-cal-num">${Math.round(m.calories)}</div>
-              <div class="meal-cal-lbl">cal</div>
-            </div>
-            <button class="meal-del" onclick="deleteMeal('${m.id}')">×</button>
-          </div>`;
-        });
-        html+='</div>';
-      }
-      cont.innerHTML=html;
+      if(!meals.length){cont.innerHTML='<div class="empty-meals"><div class="em-icon">🍽️</div><p>هێشتا خواردنێک زیاد نەکراوە</p><div class="em-hint">کرتە بکە لەسەر (+) بۆ زیادکردن</div></div>';return;}
+      cont.innerHTML=Object.entries(groups).map(([key,g])=>{
+        if(!g.meals.length)return'';
+        const totalCal=g.meals.reduce((s,m)=>s+(m.calories||0),0);
+        return`<div class="meal-group"><div class="mg-header"><span class="mg-icon">${g.icon}</span><span class="mg-name">${g.name}</span><span class="mg-cal">${Math.round(totalCal)} cal</span></div>${g.meals.map(m=>`<div class="meal-item" onclick="toggleMealDetails('${m.id}')"><span class="meal-emoji">${m.emoji||'🍽️'}</span><div class="meal-info"><div class="meal-name">${m.name_ku||m.name_en||'—'}</div><div class="meal-sources">${m.qty} ${m.unit}</div><div class="meal-macros"><span class="mm mm-p">P: ${Math.round(m.protein||0)}g</span><span class="mm mm-c">C: ${Math.round(m.carbs||0)}g</span><span class="mm mm-f">F: ${Math.round(m.fat||0)}g</span></div><div class="meal-details" id="details-${m.id}"><div class="meal-det-title">ڤیتامین و کانزا</div><div class="micro-grid">${renderMicronutrients(m)}</div></div></div><div class="meal-cal"><div class="meal-cal-num">${Math.round(m.calories||0)}</div><div class="meal-cal-lbl">cal</div></div><button class="meal-del" onclick="delMeal(event,'${m.id}')">×</button></div>`).join('')}</div>`;
+      }).join('');
     }
+    
+    function renderMicronutrients(meal){
+      const micros=[];
+      if(meal.vitaminA)micros.push({name:'ڤیتامین A',val:Math.round(meal.vitaminA)+'μg'});
+      if(meal.vitaminC)micros.push({name:'ڤیتامین C',val:Math.round(meal.vitaminC)+'mg'});
+      if(meal.vitaminD)micros.push({name:'ڤیتامین D',val:Math.round(meal.vitaminD)+'μg'});
+      if(meal.calcium)micros.push({name:'کالسیۆم',val:Math.round(meal.calcium)+'mg'});
+      if(meal.iron)micros.push({name:'ئاسن',val:Math.round(meal.iron)+'mg'});
+      if(meal.fiber)micros.push({name:'فایبەر',val:Math.round(meal.fiber)+'g'});
+      if(!micros.length)return'<div class="micro-item" style="grid-column:1/-1;text-align:center;color:var(--text3);">زانیاری نییە</div>';
+      return micros.map(m=>`<div class="micro-item"><span class="micro-name">${m.name}</span><span class="micro-val">${m.val}</span></div>`).join('');
+    }
+    
+    window.toggleMealDetails=id=>{
+      const el=document.getElementById('details-'+id);
+      if(!el)return;
+      el.classList.toggle('open');
+    };
 
-    window.deleteMeal=id=>{
+    window.delMeal=(e,id)=>{
+      e.stopPropagation();
       const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
       td.meals=(td.meals||[]).filter(m=>m.id!==id);
       localStorage.setItem('rkf_today',JSON.stringify(td));
       updateRings();renderMeals();
     };
 
-    // ══ MODAL ══
-    window.openModal=()=>{
-      selectedFood=null;selectedUnit=null;selectedMealType=null;
-      document.querySelectorAll('.mt-opt').forEach(el=>el.classList.remove('selected'));
-      showStep(1);
-      document.getElementById('add-modal').classList.add('open');
-    };
+    // ═════ MODAL ═════
+    window.openAddModal=()=>{document.getElementById('add-modal').classList.add('open');showStep(1);};
     document.getElementById('add-modal').addEventListener('click',e=>{if(e.target===document.getElementById('add-modal'))document.getElementById('add-modal').classList.remove('open');});
 
     function showStep(n){
-      document.getElementById('modal-s1').style.display=n===1?'block':'none';
-      document.getElementById('modal-s2').style.display=n===2?'block':'none';
-      document.getElementById('modal-s3').style.display=n===3?'block':'none';
+      document.querySelectorAll('.modal-step').forEach((s,i)=>s.classList.toggle('active',i+1===n));
     }
 
     window.selMealType=type=>{
       selectedMealType=type;
-      document.querySelectorAll('.mt-opt').forEach(el=>el.classList.toggle('selected',el.dataset.type===type));
+      document.querySelectorAll('.mt-opt').forEach(el=>el.classList.toggle('selected',el.textContent.includes({breakfast:'بەیانی',lunch:'نیوەڕۆ',dinner:'ئێوارە',snack:'سووک'}[type])));
       setTimeout(()=>{
         showStep(2);
         // reset search — readonly so keyboard won't auto-open
@@ -543,6 +536,12 @@
         protein:calcN(selectedUnit,qty,'protein'),
         carbs:calcN(selectedUnit,qty,'carbs'),
         fat:calcN(selectedUnit,qty,'fat'),
+        vitaminA:calcN(selectedUnit,qty,'vitaminA'),
+        vitaminC:calcN(selectedUnit,qty,'vitaminC'),
+        vitaminD:calcN(selectedUnit,qty,'vitaminD'),
+        calcium:calcN(selectedUnit,qty,'calcium'),
+        iron:calcN(selectedUnit,qty,'iron'),
+        fiber:calcN(selectedUnit,qty,'fiber'),
         addedAt:new Date().toISOString()
       };
       const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
