@@ -149,7 +149,23 @@
     .micro-pill.vit{background:rgba(14,165,233,0.12);color:var(--blue);}
     .micro-pill.min{background:rgba(16,185,129,0.12);color:var(--green);}
 
-  
+    /* PRO Vitamin Tooltip on food list */
+    .food-item{position:relative;}
+    .fi-vit-hint{font-size:10px;color:var(--purple);margin-top:4px;display:flex;align-items:center;gap:4px;}
+    .fi-vit-lock{font-size:10px;color:var(--text3);margin-top:4px;}
+    .vit-tooltip{display:none;position:absolute;left:0;right:0;top:100%;z-index:50;background:var(--card2);border:1px solid rgba(139,92,246,0.3);border-radius:14px;padding:10px 12px;margin-top:4px;}
+    .food-item:hover .vit-tooltip,.food-item.vt-open .vit-tooltip{display:block;}
+    .vit-tooltip-title{font-size:10px;font-weight:800;color:var(--purple);margin-bottom:6px;}
+    .vit-tooltip-pills{display:flex;flex-wrap:wrap;gap:4px;}
+
+    /* Meal vitamin expand */
+    .meal-vit-btn{font-size:10px;color:var(--purple);background:rgba(139,92,246,0.1);border:none;border-radius:8px;padding:2px 8px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;margin-top:4px;}
+    .meal-vit-panel{display:none;margin-top:6px;padding:8px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.15);border-radius:10px;}
+    .meal-vit-panel.open{display:block;}
+    .mvp-title{font-size:10px;font-weight:800;color:var(--purple);margin-bottom:6px;}
+    .mvp-pills{display:flex;flex-wrap:wrap;gap:3px;}
+    .meal-vit-lock{font-size:10px;color:var(--text3);background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.12);border-radius:8px;padding:4px 10px;margin-top:4px;display:inline-block;}
+
     .micro-rings-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:20px;margin-bottom:16px;display:none;}
     .micro-rings-card.pro-visible{display:block;}
     .micro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -334,8 +350,9 @@
       return true;
     }
     onAuthStateChanged(auth, user=>{
-      if(!user){window.location.href='index.html';return;}
+      // بەشی خواردن فریە — لۆگین پێویستە بەڵام PRO نا
       document.getElementById('loading-screen').style.display='none';
+      if(!user){window.location.href='index.html';return;}
       checkReset();
       document.getElementById('date-txt').textContent=new Date().toLocaleDateString('en-GB');
       updateRings();
@@ -465,6 +482,7 @@
       const today=JSON.parse(localStorage.getItem('rkf_today')||'{}'),meals=today.meals||[];
       const cont=document.getElementById('meals-container');
       if(!meals.length){cont.innerHTML='<div class="empty-meals"><div class="em-icon">🍽️</div><p>هێشتا خواردنت تۆمار نەکراوە</p><div class="em-hint">بە + خواردنت زیاد بکە</div></div>';return;}
+      const pro=isPro();
       const grps={breakfast:{name:'بەیانی خواردن',icon:'🌅',meals:[]},lunch:{name:'نیوەڕۆ خواردن',icon:'☀️',meals:[]},dinner:{name:'شەو خواردن',icon:'🌙',meals:[]},snack:{name:'قۆناغ',icon:'🍎',meals:[]}};
       meals.forEach(m=>{if(grps[m.type])grps[m.type].meals.push(m);});
       let html='';
@@ -473,12 +491,24 @@
         const gC=g.meals.reduce((s,m)=>s+(m.calories||0),0);
         html+=`<div class="meal-group"><div class="mg-header"><span class="mg-icon">${g.icon}</span><span class="mg-name">${g.name}</span><span class="mg-cal">${Math.round(gC)} cal</span></div>`;
         g.meals.forEach(m=>{
-          const pro=isPro();
-        const v=m.vitamins||{};
-        const mn=m.minerals||{};
-        const hasMicro=pro&&(Object.values(v).some(x=>x>0)||Object.values(mn).some(x=>x>0));
-        const microHtml=hasMicro?`<div class="meal-micro" style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px;">${Object.entries(v).filter(([k,x])=>x>0).map(([k,x])=>`<span class="micro-pill vit">${k} ${Math.round(x*100)/100}mg</span>`).join('')}${Object.entries(mn).filter(([k,x])=>x>0).map(([k,x])=>`<span class="micro-pill min">${k} ${Math.round(x*100)/100}mg</span>`).join('')}</div>`:'';
-        html+=`<div class="meal-item">
+          const v=m.vitamins||{};
+          const mn=m.minerals||{};
+          const vitEntries=Object.entries(v).filter(([k,x])=>x>0);
+          const minEntries=Object.entries(mn).filter(([k,x])=>x>0);
+          const hasVit=vitEntries.length>0||minEntries.length>0;
+          // دوگمەی ڤیتامین
+          let vitBtn='';
+          if(pro && hasVit){
+            const allPills=[
+              ...vitEntries.map(([k,x])=>`<span class="micro-pill vit">${k} ${Math.round(x*100)/100}mg</span>`),
+              ...minEntries.map(([k,x])=>`<span class="micro-pill min">${k} ${Math.round(x*100)/100}mg</span>`)
+            ].join('');
+            vitBtn=`<button class="meal-vit-btn" onclick="toggleVitPanel(this)">🧬 ڤیتامینەکان</button>
+              <div class="meal-vit-panel"><div class="mvp-title">🧬 ڤیتامین و کانزاکان (mg)</div><div class="mvp-pills">${allPills}</div></div>`;
+          } else if(!pro){
+            vitBtn=`<span class="meal-vit-lock">🔒 ڤیتامینەکان — PRO</span>`;
+          }
+          html+=`<div class="meal-item">
             <div class="meal-emoji">${m.emoji||'🍽️'}</div>
             <div class="meal-info">
               <div class="meal-name">${m.name_ku||m.name_en||'—'}</div>
@@ -488,7 +518,7 @@
                 <span class="mm mm-c">C:${Math.round(m.carbs*10)/10}g</span>
                 <span class="mm mm-f">F:${Math.round(m.fat*10)/10}g</span>
               </div>
-              ${microHtml}
+              ${vitBtn}
             </div>
             <div class="meal-cal">
               <div class="meal-cal-num">${Math.round(m.calories)}</div>
@@ -501,6 +531,11 @@
       }
       cont.innerHTML=html;
     }
+
+    window.toggleVitPanel=btn=>{
+      const panel=btn.nextElementSibling;
+      if(panel)panel.classList.toggle('open');
+    };
 
     window.deleteMeal=id=>{
       const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
@@ -556,15 +591,33 @@
         list.innerHTML=`<div class="empty-food">${allFoods.length===0?'هێشتا خواردنێک زیاد نەکراوە لە ئەدمین':'خواردنێک نەدۆزرایەوە'}</div>`;
         return;
       }
+      const pro=isPro();
       list.innerHTML=filteredFoods.map(f=>{
         const units=f.units||[];
         const unitBadges=units.map(u=>`<span class="fi-unit-badge">${u.type}</span>`).join('');
+        const v=f.vitamins||{}, mn=f.minerals||{};
+        const vitKeys=Object.entries(v).filter(([k,x])=>x>0);
+        const minKeys=Object.entries(mn).filter(([k,x])=>x>0);
+        const hasVit=vitKeys.length>0||minKeys.length>0;
+        // ڤیتامین ھینت
+        let vitHint='';
+        if(pro && hasVit){
+          const allPills=[
+            ...vitKeys.map(([k,x])=>`<span class="micro-pill vit">${k} ${Math.round(x*10)/10}mg</span>`),
+            ...minKeys.map(([k,x])=>`<span class="micro-pill min">${k} ${Math.round(x*10)/10}mg</span>`)
+          ].join('');
+          vitHint=`<div class="fi-vit-hint">🧬 ${vitKeys.length+minKeys.length} ڤیتامین/کانزا — بکە سەر ببینیت</div>
+            <div class="vit-tooltip"><div class="vit-tooltip-title">🧬 ڤیتامین و کانزاکان (mg/100g)</div><div class="vit-tooltip-pills">${allPills}</div></div>`;
+        } else if(!pro && hasVit){
+          vitHint=`<div class="fi-vit-lock">🔒 ڤیتامینەکان — تەنها PRO</div>`;
+        }
         return`<div class="food-item${selectedFood?.id===f.id?' selected':''}" onclick="selectFood('${f.id}')">
           <span class="fi-emoji">${f.emoji||'🍽️'}</span>
           <div class="fi-info">
             <div class="fi-name">${f.name_ku||f.name_en||'—'}</div>
             <div class="fi-name-en">${f.name_en||''}</div>
             <div class="fi-units">${unitBadges}</div>
+            ${vitHint}
           </div>
         </div>`;
       }).join('');
