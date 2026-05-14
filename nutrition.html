@@ -144,6 +144,25 @@
     @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
     @keyframes spin{to{transform:rotate(360deg);}}
     @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  
+    .micro-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap;}
+    .micro-pill.vit{background:rgba(14,165,233,0.12);color:var(--blue);}
+    .micro-pill.min{background:rgba(16,185,129,0.12);color:var(--green);}
+
+  
+    .micro-rings-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:20px;margin-bottom:16px;display:none;}
+    .micro-rings-card.pro-visible{display:block;}
+    .micro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+    .micro-ring-item{text-align:center;padding:10px;background:rgba(139,92,246,0.06);border-radius:16px;border:1px solid rgba(139,92,246,0.12);}
+    .micro-ring-item .mri-name{font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px;}
+    .micro-ring-item .mri-val{font-size:13px;font-weight:800;color:var(--text);}
+    .micro-ring-item .mri-goal{font-size:10px;color:var(--text3);}
+    .pro-lock-overlay{position:absolute;inset:0;background:rgba(7,9,14,0.85);backdrop-filter:blur(8px);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;z-index:10;}
+    .pro-lock-overlay .lock-icon{font-size:28px;}
+    .pro-lock-overlay .lock-text{font-size:13px;font-weight:700;color:var(--purple);}
+    .pro-lock-overlay .lock-sub{font-size:11px;color:var(--text2);text-align:center;padding:0 20px;}
+    .rings-card{position:relative;}
+
   </style>
 </head>
 <body>
@@ -164,6 +183,27 @@
         <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-pro" cx="40" cy="40" r="32" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 0.8s ease"/></svg><div class="ring-mini-center" id="rc-pro">0%</div></div><div class="ri-val" id="rv-pro">0g</div><div class="ri-label">پڕۆتین</div><div class="ri-goal" id="rg-pro">/0g</div></div>
         <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-carb" cx="40" cy="40" r="32" fill="none" stroke="var(--orange)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 0.8s ease"/></svg><div class="ring-mini-center" id="rc-carb">0%</div></div><div class="ri-val" id="rv-carb">0g</div><div class="ri-label">کاربۆ</div><div class="ri-goal" id="rg-carb">/0g</div></div>
         <div class="ring-item"><div class="ring-mini-wrap"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1E2530" stroke-width="7"/><circle id="r-fat" cx="40" cy="40" r="32" fill="none" stroke="var(--green)" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:stroke-dashoffset 0.8s ease"/></svg><div class="ring-mini-center" id="rc-fat">0%</div></div><div class="ri-val" id="rv-fat">0g</div><div class="ri-label">چەوی</div><div class="ri-goal" id="rg-fat">/0g</div></div>
+      </div>
+    </div>
+
+    <!-- MICRO NUTRIENTS (PRO only) -->
+    <div class="micro-rings-card" id="micro-rings">
+      <div class="rings-title">🧬 ڤیتامین & کانزاکان (PRO)</div>
+      <div class="micro-grid" id="micro-grid">
+        <div class="micro-ring-item"><div class="mri-name">C</div><div class="mri-val" id="mv-C">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">D</div><div class="mri-val" id="mv-D">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">B12</div><div class="mri-val" id="mv-B12">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">Iron</div><div class="mri-val" id="mv-iron">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">Calcium</div><div class="mri-val" id="mv-calcium">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">Magnesium</div><div class="mri-val" id="mv-magnesium">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">Zinc</div><div class="mri-val" id="mv-zinc">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">Potassium</div><div class="mri-val" id="mv-potassium">0</div><div class="mri-goal">mg</div></div>
+        <div class="micro-ring-item"><div class="mri-name">A</div><div class="mri-val" id="mv-A">0</div><div class="mri-goal">mg</div></div>
+      </div>
+      <div id="micro-lock" class="pro-lock-overlay" style="display:none;">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-text">تەنها بۆ بەکارهێنەرانی PRO</div>
+        <div class="lock-sub">بۆ بینینی ڤیتامین و کانزاکان، لایسێنسی PRO بکڕە</div>
       </div>
     </div>
 
@@ -255,6 +295,15 @@
           <span class="qp-label">کالۆری:</span>
           <span class="qp-val" id="qty-cal-preview">—</span>
         </div>
+        <!-- Micro nutrients preview (PRO only) -->
+        <div id="s3-micro-preview" style="display:none;margin-top:12px;padding:12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.15);border-radius:12px;">
+          <div style="font-size:12px;font-weight:800;color:var(--purple);margin-bottom:8px;">🧬 ڤیتامین & کانزاکان (mg)</div>
+          <div id="s3-micro-tags" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
+        </div>
+        <div id="s3-pro-lock" style="display:none;margin-top:12px;padding:12px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.15);border-radius:12px;text-align:center;">
+          <div style="font-size:20px;">🔒</div>
+          <div style="font-size:12px;font-weight:700;color:var(--purple);margin-top:4px;">ڤیتامین & کانزاکان تەنها بۆ PRO</div>
+        </div>
         <div class="modal-nav">
           <button class="btn-back" onclick="backToS2()">← گەڕانەوە</button>
           <button class="btn-confirm" id="btn-add-meal" onclick="addMeal()">✓ زیادکردن</button>
@@ -277,6 +326,13 @@
     let selectedFood=null, selectedUnit=null, selectedMealType=null;
     let activeCat='all', searchQ='', foodsLoaded=false;
 
+    function isPro(){
+      if(localStorage.getItem('rkf_pro')!=='1')return false;
+      const exp=localStorage.getItem('rkf_pro_expires');
+      if(!exp)return true;
+      if(Date.now()>parseInt(exp)){localStorage.setItem('rkf_pro','expired');return false;}
+      return true;
+    }
     onAuthStateChanged(auth, user=>{
       if(!user){window.location.href='index.html';return;}
       document.getElementById('loading-screen').style.display='none';
@@ -344,6 +400,8 @@
       sR('pro','r-pro',t.pro,goals.protein,'g','var(--blue)');
       sR('carb','r-carb',t.carb,goals.carbs,'g','var(--orange)');
       sR('fat','r-fat',t.fat,goals.fat,'g','var(--green)');
+      // Update micro nutrients (PRO)
+      updateMicroRings();
 
       // Overflow warning
       const overflows=[];
@@ -362,6 +420,46 @@
       }else{warn.style.display='none';}
     }
 
+    // MICRO NUTRIENTS (PRO only)
+    function updateMicroRings(){
+      const pro=isPro();
+      const microCard=document.getElementById('micro-rings');
+      const lockOverlay=document.getElementById('micro-lock');
+      if(!microCard)return;
+
+      if(!pro){
+        microCard.style.display='block';
+        lockOverlay.style.display='flex';
+        return;
+      }
+
+      lockOverlay.style.display='none';
+      microCard.style.display='block';
+      microCard.classList.add('pro-visible');
+
+      const today=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      const meals=today.meals||[];
+
+      // Sum all micro nutrients
+      const micro={
+        A:0,C:0,D:0,E:0,K:0,B1:0,B2:0,B3:0,B6:0,B9:0,B12:0,
+        calcium:0,iron:0,magnesium:0,phosphorus:0,potassium:0,sodium:0,zinc:0,selenium:0
+      };
+      meals.forEach(m=>{
+        const v=m.vitamins||{};
+        const mn=m.minerals||{};
+        Object.keys(v).forEach(k=>{micro[k]=(micro[k]||0)+(v[k]||0);});
+        Object.keys(mn).forEach(k=>{micro[k]=(micro[k]||0)+(mn[k]||0);});
+      });
+
+      // Update displayed values
+      const ids={'mv-A':'A','mv-C':'C','mv-D':'D','mv-B12':'B12','mv-iron':'iron','mv-calcium':'calcium','mv-magnesium':'magnesium','mv-zinc':'zinc','mv-potassium':'potassium'};
+      Object.entries(ids).forEach(([elId,key])=>{
+        const el=document.getElementById(elId);
+        if(el)el.textContent=Math.round((micro[key]||0)*100)/100;
+      });
+    }
+
     // ══ MEALS RENDER ══
     function renderMeals(){
       const today=JSON.parse(localStorage.getItem('rkf_today')||'{}'),meals=today.meals||[];
@@ -375,7 +473,12 @@
         const gC=g.meals.reduce((s,m)=>s+(m.calories||0),0);
         html+=`<div class="meal-group"><div class="mg-header"><span class="mg-icon">${g.icon}</span><span class="mg-name">${g.name}</span><span class="mg-cal">${Math.round(gC)} cal</span></div>`;
         g.meals.forEach(m=>{
-          html+=`<div class="meal-item">
+          const pro=isPro();
+        const v=m.vitamins||{};
+        const mn=m.minerals||{};
+        const hasMicro=pro&&(Object.values(v).some(x=>x>0)||Object.values(mn).some(x=>x>0));
+        const microHtml=hasMicro?`<div class="meal-micro" style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px;">${Object.entries(v).filter(([k,x])=>x>0).map(([k,x])=>`<span class="micro-pill vit">${k} ${Math.round(x*100)/100}mg</span>`).join('')}${Object.entries(mn).filter(([k,x])=>x>0).map(([k,x])=>`<span class="micro-pill min">${k} ${Math.round(x*100)/100}mg</span>`).join('')}</div>`:'';
+        html+=`<div class="meal-item">
             <div class="meal-emoji">${m.emoji||'🍽️'}</div>
             <div class="meal-info">
               <div class="meal-name">${m.name_ku||m.name_en||'—'}</div>
@@ -385,6 +488,7 @@
                 <span class="mm mm-c">C:${Math.round(m.carbs*10)/10}g</span>
                 <span class="mm mm-f">F:${Math.round(m.fat*10)/10}g</span>
               </div>
+              ${microHtml}
             </div>
             <div class="meal-cal">
               <div class="meal-cal-num">${Math.round(m.calories)}</div>
@@ -482,8 +586,30 @@
       document.getElementById('s3-name').textContent=selectedFood.name_ku||selectedFood.name_en||'';
       document.getElementById('s3-name-en').textContent=selectedFood.name_en||'';
       setDefaultQty(selectedUnit);
+      // Show micro preview if PRO
+      updateMicroPreview();
       showStep(3);
     };
+    function updateMicroPreview(){
+      const pro=isPro();
+      const hasMicro=selectedFood&&(selectedFood.vitamins||selectedFood.minerals);
+      const previewEl=document.getElementById('s3-micro-preview');
+      const lockEl=document.getElementById('s3-pro-lock');
+      if(!pro){
+        if(previewEl)previewEl.style.display='none';
+        if(lockEl)lockEl.style.display='block';
+        return;
+      }
+      if(lockEl)lockEl.style.display='none';
+      if(!hasMicro||!previewEl){if(previewEl)previewEl.style.display='none';return;}
+      previewEl.style.display='block';
+      const v=selectedFood.vitamins||{};
+      const m=selectedFood.minerals||{};
+      const tags=[];
+      Object.entries(v).forEach(([k,val])=>{if(val>0)tags.push(`<span class="micro-pill vit">${k} ${val}mg</span>`);});
+      Object.entries(m).forEach(([k,val])=>{if(val>0)tags.push(`<span class="micro-pill min">${k} ${val}mg</span>`);});
+      document.getElementById('s3-micro-tags').innerHTML=tags.join('')||'<span style="font-size:11px;color:var(--text2);">هیچ ڤیتامین/کانزایەکی تۆمار نەکراوە</span>';
+    }
 
     window.selUnit=idx=>{
       const units=selectedFood?.units||[];
@@ -521,6 +647,15 @@
       const qty=parseFloat(document.getElementById('qty-inp').value)||1;
       const cal=calcN(selectedUnit,qty,'cal');
       document.getElementById('qty-cal-preview').textContent=Math.round(cal*10)/10+' cal';
+      // Update micro preview scaled by qty
+      if(isPro()&&selectedFood){
+        const v=selectedFood.vitamins||{};
+        const m=selectedFood.minerals||{};
+        const tags=[];
+        Object.entries(v).forEach(([k,val])=>{if(val>0)tags.push(`<span class="micro-pill vit">${k} ${Math.round(val*(qty/100)*100)/100}mg</span>`);});
+        Object.entries(m).forEach(([k,val])=>{if(val>0)tags.push(`<span class="micro-pill min">${k} ${Math.round(val*(qty/100)*100)/100}mg</span>`);});
+        document.getElementById('s3-micro-tags').innerHTML=tags.join('')||'<span style="font-size:11px;color:var(--text2);">هیچ ڤیتامین/کانزایەکی تۆمار نەکراوە</span>';
+      }
     };
 
     function calcN(unit,qty,field){
@@ -529,6 +664,11 @@
       return(unit[field]||0)*qty;
     }
 
+    function calcMicro(food,qty,field,subfield){
+      if(!food||!field)return 0;
+      const val=(food[field]||{})[subfield]||0;
+      return val*(qty/100);
+    }
     window.addMeal=()=>{
       if(!selectedFood||!selectedUnit||!selectedMealType)return;
       const qty=parseFloat(document.getElementById('qty-inp').value)||1;
@@ -544,6 +684,21 @@
         carbs:calcN(selectedUnit,qty,'carbs'),
         fat:calcN(selectedUnit,qty,'fat'),
         addedAt:new Date().toISOString()
+      };
+      // Add vitamins & minerals (for PRO display)
+      const v=selectedFood.vitamins||{};
+      const m=selectedFood.minerals||{};
+      meal.vitamins={
+        A:calcMicro(selectedFood,qty,'vitamins','A'),C:calcMicro(selectedFood,qty,'vitamins','C'),D:calcMicro(selectedFood,qty,'vitamins','D'),
+        E:calcMicro(selectedFood,qty,'vitamins','E'),K:calcMicro(selectedFood,qty,'vitamins','K'),B1:calcMicro(selectedFood,qty,'vitamins','B1'),
+        B2:calcMicro(selectedFood,qty,'vitamins','B2'),B3:calcMicro(selectedFood,qty,'vitamins','B3'),B6:calcMicro(selectedFood,qty,'vitamins','B6'),
+        B9:calcMicro(selectedFood,qty,'vitamins','B9'),B12:calcMicro(selectedFood,qty,'vitamins','B12')
+      };
+      meal.minerals={
+        calcium:calcMicro(selectedFood,qty,'minerals','calcium'),iron:calcMicro(selectedFood,qty,'minerals','iron'),
+        magnesium:calcMicro(selectedFood,qty,'minerals','magnesium'),phosphorus:calcMicro(selectedFood,qty,'minerals','phosphorus'),
+        potassium:calcMicro(selectedFood,qty,'minerals','potassium'),sodium:calcMicro(selectedFood,qty,'minerals','sodium'),
+        zinc:calcMicro(selectedFood,qty,'minerals','zinc'),selenium:calcMicro(selectedFood,qty,'minerals','selenium')
       };
       const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
       td.meals=td.meals||[];td.meals.push(meal);
