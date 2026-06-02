@@ -60,11 +60,14 @@
     .meal-info{flex:1;}
     .meal-name{font-size:15px;font-weight:700;}
     .meal-sources{font-size:12px;color:var(--text2);margin-top:3px;}
-    .meal-macros{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
-    .mm{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:700;}
+    .meal-macros{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+    .mm{font-size:10px;padding:3px 8px;border-radius:6px;font-weight:700;}
     .mm-p{background:rgba(14,165,233,0.12);color:var(--blue);}
     .mm-c{background:rgba(245,158,11,0.12);color:var(--orange);}
     .mm-f{background:rgba(16,185,129,0.12);color:var(--green);}
+    .meal-micros{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:6px;}
+    .mi-tag{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;background:var(--card2);color:var(--text2);border:1px solid var(--border);}
+    .mi-tag b{margin-left:2px;color:var(--text);}
     .meal-cal{text-align:left;flex-shrink:0;}
     .meal-cal-num{font-size:18px;font-weight:900;}
     .meal-cal-lbl{font-size:11px;color:var(--text2);}
@@ -375,6 +378,13 @@
         const gC=g.meals.reduce((s,m)=>s+(m.calories||0),0);
         html+=`<div class="meal-group"><div class="mg-header"><span class="mg-icon">${g.icon}</span><span class="mg-name">${g.name}</span><span class="mg-cal">${Math.round(gC)} cal</span></div>`;
         g.meals.forEach(m=>{
+          const v = m.vitamins || {}; const min = m.minerals || {};
+          const microTags = [];
+          const vNames = {A:'A', C:'C', D:'D', E:'E', K:'K', B1:'B1', B2:'B2', B3:'B3', B6:'B6', B9:'B9', B12:'B12'};
+          for(let k in vNames) if(v[k]>0) microTags.push(`${vNames[k]}:<b>${v[k]}</b>`);
+          const mNames = {calcium:'Ca', iron:'Fe', magnesium:'Mg', phosphorus:'P', potassium:'K', sodium:'Na', zinc:'Zn', selenium:'Se'};
+          for(let k in mNames) if(min[k]>0) microTags.push(`${mNames[k]}:<b>${min[k]}</b>`);
+          const microHtml = microTags.length > 0 ? `<div class="meal-micros">${microTags.map(t=>`<span class="mi-tag">${t}</span>`).join('')}</div>` : '';
           html+=`<div class="meal-item">
             <div class="meal-emoji">${m.emoji||'🍽️'}</div>
             <div class="meal-info">
@@ -385,6 +395,7 @@
                 <span class="mm mm-c">C:${Math.round(m.carbs*10)/10}g</span>
                 <span class="mm mm-f">F:${Math.round(m.fat*10)/10}g</span>
               </div>
+              ${microHtml}
             </div>
             <div class="meal-cal">
               <div class="meal-cal-num">${Math.round(m.calories)}</div>
@@ -455,12 +466,20 @@
       list.innerHTML=filteredFoods.map(f=>{
         const units=f.units||[];
         const unitBadges=units.map(u=>`<span class="fi-unit-badge">${u.type}</span>`).join('');
+        const v = f.vitamins || {}; const m = f.minerals || {};
+        const microTags = [];
+        if(v.C > 0) microTags.push(`C:<b>${v.C}</b>`);
+        if(v.D > 0) microTags.push(`D:<b>${v.D}</b>`);
+        if(m.iron > 0) microTags.push(`Fe:<b>${m.iron}</b>`);
+        if(m.calcium > 0) microTags.push(`Ca:<b>${m.calcium}</b>`);
+        const microHtml = microTags.length > 0 ? `<div class="fi-units" style="margin-top:4px;opacity:0.7">${microTags.slice(0,3).map(t=>`<span class="fi-unit-badge" style="border-color:var(--purple-dim)">${t}</span>`).join('')}</div>` : '';
         return`<div class="food-item${selectedFood?.id===f.id?' selected':''}" onclick="selectFood('${f.id}')">
           <span class="fi-emoji">${f.emoji||'🍽️'}</span>
           <div class="fi-info">
             <div class="fi-name">${f.name_ku||f.name_en||'—'}</div>
             <div class="fi-name-en">${f.name_en||''}</div>
             <div class="fi-units">${unitBadges}</div>
+            ${microHtml}
           </div>
         </div>`;
       }).join('');
@@ -523,10 +542,14 @@
       document.getElementById('qty-cal-preview').textContent=Math.round(cal*10)/10+' cal';
     };
 
-    function calcN(unit,qty,field){
+    function calcN(unit,qty,field, isVit=false, isMin=false){
       if(!unit)return 0;
-      if(isPerHundred(unit.type))return(unit[field]||0)*(qty/100);
-      return(unit[field]||0)*qty;
+      let val = 0;
+      if(isVit) val = selectedFood.vitamins?.[field] || 0;
+      else if(isMin) val = selectedFood.minerals?.[field] || 0;
+      else val = unit[field] || 0;
+      if(isPerHundred(unit.type)) return val * (qty/100);
+      return val * qty;
     }
 
     window.addMeal=()=>{
@@ -543,8 +566,12 @@
         protein:calcN(selectedUnit,qty,'protein'),
         carbs:calcN(selectedUnit,qty,'carbs'),
         fat:calcN(selectedUnit,qty,'fat'),
+        vitamins: {},
+        minerals: {},
         addedAt:new Date().toISOString()
       };
+      if(selectedFood.vitamins) for(let k in selectedFood.vitamins) meal.vitamins[k] = calcN(selectedUnit, qty, k, true);
+      if(selectedFood.minerals) for(let k in selectedFood.minerals) meal.minerals[k] = calcN(selectedUnit, qty, k, false, true);
       const td=JSON.parse(localStorage.getItem('rkf_today')||'{}');
       td.meals=td.meals||[];td.meals.push(meal);
       localStorage.setItem('rkf_today',JSON.stringify(td));

@@ -60,6 +60,14 @@
     .vr-name{font-size:15px;font-weight:800;}
     .vr-dose{display:inline-block;font-size:11px;color:var(--purple);font-weight:700;background:var(--purple-dim);padding:3px 10px;border-radius:20px;margin-bottom:5px;}
     .vr-note{font-size:12px;color:var(--text2);line-height:1.5;}
+    
+    .vit-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+    .vit-stat-card { background: var(--card2); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+    .vsc-title { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+    .vsc-val { font-size: 14px; font-weight: 800; }
+    .vsc-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+    .vsc-fill { height: 100%; background: var(--purple); transition: width 0.5s; }
+
     .progress-bar-bg{height:7px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:4px;}
     .progress-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),var(--blue));transition:width 0.8s ease;}
     .progress-label{font-size:12px;color:var(--text2);margin-top:6px;text-align:center;}
@@ -192,12 +200,16 @@
     </div>
     <!-- Content -->
     <div id="vit-content" style="display:none">
+      <div class="sec-title">📊 ئاستی ڤیتامین و کانزا (لە خواردن)</div>
+      <div class="vit-stats-grid" id="vit-stats-from-food"></div>
+
       <div class="sec-title">📋 پێشنیاری بۆ تۆ</div>
       <div id="vit-recs"></div>
+      
       <div class="sec-title">✅ ئیمڕۆ وەریانت گرت؟</div>
       <div style="margin-bottom:12px">
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="vit-progress" style="width:0%"></div></div>
-        <div class="progress-label" id="vit-progress-label"></div>
+        <div class="progress-label" id="vit-progress-label">0 / 0 وەریانگرت — 0%</div>
       </div>
       <div id="vit-tracker"></div>
     </div>
@@ -380,6 +392,33 @@
       if(!pro)return;
       const prof=JSON.parse(localStorage.getItem('rkf_profile')||'{}');
       const today=JSON.parse(localStorage.getItem('rkf_today')||'{}');
+      
+      // Calculate micros from meals
+      const meals = today.meals || [];
+      const vT = { A:0, C:0, D:0, E:0, K:0, B1:0, B2:0, B3:0, B6:0, B9:0, B12:0 };
+      const mT = { calcium:0, iron:0, magnesium:0, phosphorus:0, potassium:0, sodium:0, zinc:0, selenium:0 };
+      
+      meals.forEach(m => {
+        if(m.vitamins) for(let k in vT) vT[k] += (m.vitamins[k] || 0);
+        if(m.minerals) for(let k in mT) mT[k] += (m.minerals[k] || 0);
+      });
+
+      // Display a few key ones
+      const stats = [
+        { n:'ڤیتامین C', v:vT.C, g:90, u:'mg' },
+        { n:'ئاسن (Fe)', v:mT.iron, g:18, u:'mg' },
+        { n:'کالسیۆم', v:mT.calcium, g:1000, u:'mg' },
+        { n:'ڤیتامین D', v:vT.D, g:0.02, u:'mg' }
+      ];
+      document.getElementById('vit-stats-from-food').innerHTML = stats.map(s => {
+        const p = Math.min(100, Math.round(s.v/s.g*100));
+        return `<div class="vit-stat-card">
+          <div class="vsc-title">${s.n}</div>
+          <div class="vsc-val">${Math.round(s.v*100)/100} / ${s.g}${s.u}</div>
+          <div class="vsc-bar"><div class="vsc-fill" style="width:${p}%"></div></div>
+        </div>`;
+      }).join('');
+
       const taken=today.vitamins_taken||[];
       document.getElementById('vit-recs').innerHTML=buildRecs(prof).map(r=>`<div class="vit-rec"><div class="vr-top"><span style="font-size:20px">${r.icon}</span><span class="vr-name">${r.name}</span></div><span class="vr-dose">💊 ${r.dose}</span><div class="vr-note">${r.note}</div></div>`).join('');
       const total=DAILY_VITAMINS.length,done=taken.length,pct=Math.round(done/total*100);
